@@ -1,0 +1,119 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.9.0/dist/sweetalert2.min.css">
+</head>
+
+<body>
+  <h1>User's List</h1>
+
+  
+
+  <!-- <a href="/admin/new-user" class="btn btn-success">
+    <i class="fas fa-user-plus"></i> Add New User
+  </a> -->
+  <br><br>
+  <div class="container">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Mobile</th>
+          <th>status</th>
+          <th>Image</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (users.length> 0) { %>
+          <% for (let i=0; i < users.length; i++) { %>
+            <tr>
+              <td>
+                <%= users[i].name %>
+              </td>
+              <td>
+                <%= users[i].email %>
+              </td>
+              <td>
+                <%= users[i].mobile %>
+              </td>
+              <td>
+                <% if (users[i].is_blocked===1) { %>
+                  Blocked
+                  <% } else if (users[i].is_blocked===0) { %>
+                    Active
+                    <% } %>
+              </td>
+              <td>
+                <img src="/userImages/<%= users[i].image %>" width="50" height="50" alt="<%= users[i].image %>">
+              </td>
+              <td>
+                <!-- <a href="/admin/edit-user?id=<%= users[i]._id %>" class="edit-user" data-user-id="<%= users[i]._id %>">
+                  <i class="fas fa-edit"></i> Edit
+                </a>
+                <a  onclick="confirmRemove('<%= users[i]._id %>')">
+                  <i class="fas fa-trash-alt"></i> Delete
+                </a> -->
+
+
+                <a href="/admin/blockuser?id=<%= users[i]._id %>">
+                  <i class="fas fa-lock"></i>
+                  <% if (users[i].is_blocked===1) { %>
+                    Unblock
+                    <% } else if (users[i].is_blocked===0) { %>
+                      block
+                      <% } %>
+                </a>
+              </td>
+            </tr>
+            <% } %>
+              <% } else { %>
+                <tr>
+                  <td colspan="5">Users not found</td>
+                </tr>
+                <% } %>
+      </tbody>
+    </table>
+  </div>
+
+  <br>
+  <a href="/admin/home" class="btn btn-primary">
+    <i class="fas fa-home"></i> Go to Home
+  </a>
+
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.9.0/dist/sweetalert2.all.min.js"></script>
+<script>
+  function confirmRemove(productId) {
+      Swal.fire({
+
+        title: 'Edit Product',
+        text: 'Are you sure you want to edit this product?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'No',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // If the user clicks "Yes," proceed to the edit page
+          window.location.href = '/admin/delete-user/' + productId;
+        }
+      });
+    }
+</script>
+
+  
+
+</body>
+  </html>

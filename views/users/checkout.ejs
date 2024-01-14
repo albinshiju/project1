@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Address</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" crossorigin="anonymous">
+
+    <!-- Custom Styles -->
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            color: #212529;
+        }
+
+        .hero {
+            background-color: #007bff;
+            color: #fff;
+            padding: 80px 0;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .untree_co-section {
+            padding: 40px 0;
+        }
+
+        .border {
+            border: 1px solid #dee2e6;
+        }
+
+        .intro-excerpt {
+            margin-bottom: 20px;
+        }
+
+        .card {
+            margin-bottom: 20px;
+        }
+
+        .btn-black {
+            background-color: #343a40;
+            color: #fff;
+        }
+
+        .btn-black:hover {
+            background-color: #23272b;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Start Hero Section -->
+    <%- include('../layouts/header.ejs') %>
+    <%- include('./userheader.ejs') %>
+    
+    <!-- End Hero Section -->
+
+    <div class="untree_co-section">
+        <div class="container">
+            <!-- <div class="row mb-5">
+                <div class="col-md-12">
+                    <div class="border p-4 rounded" role="alert">
+                        Returning customer? <a href="#">Click here</a> to login
+                    </div>
+                </div>
+            </div> -->
+
+            <!-- Billing Details Section -->
+            <div class="row">
+                <div class="col-md-6 mb-5 mb-md-0">
+                    <h2 class="h3 mb-3 text-black">Billing Details</h2>
+                    <div class="p-3 p-lg-5 border bg-white">
+                        <% if (!address) { %>
+                            <a href="/addaddresscheckoutpage" class="btn btn-success">Add new address</a>
+                        <% } else { %>
+                            <% address.address.forEach((data, index) => { %>
+                                <!-- Address Card -->
+                                <div class="card mb-2">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <input type="radio" name="selectedAddress" style="height: 25px; width: 25px;" value="<%= index %>" />
+                                                <h4 style="font-size: 18px;"><%= data.firstName %> <%= data.lastName %></h4>
+                                                <h2 style="font-size: 14px;">+91 <%= data.phone %></h2>
+                                                <h2 style="font-size: 14px;"><%= data.landmark %></h2>
+                                                <h2 style="font-size: 14px;"><%= data.addressDetail %></h2>
+                                                <h2 style="font-size: 14px;"><%= data.state %>-<%= data.zip %></h2>
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End Address Card -->
+                            <% }) %>
+                            <a href="/addaddresscheckoutpage" class="btn btn-success">Add new address</a>
+                        <% } %>
+                    </div>
+
+                    <!-- Select Payment Section -->
+                    <div class="border p-3 mb-3">
+                        <h1>Select Payment</h1>
+                        <div style="position: relative; margin-bottom: 25px;">
+                            <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" name="payment-method" value="Razorpay" id="Razorpay">
+                                <label class="custom-control-label" for="Razorpay">Razorpay</label>
+                            </div>
+                        </div>
+                        <div style="position: relative; margin-bottom: 25px;">
+                            <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" name="payment-method" value="COD" id="directcheck">
+                                <label class="custom-control-label" for="directcheck">COD</label>
+                            </div>
+                        </div>
+                        <div style="position: relative; margin-bottom: 25px;">
+                            <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" name="payment-method" value="Wallet" id="Wallet">
+                                <label class="custom-control-label" for="Wallet">Wallet</label>
+                            </div>
+                        </div>
+                        <!-- <div style="position: relative; margin-bottom: 25px;">
+                            <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" name="payment-method" value="Wallet" id="Wallet">
+                                <label class="custom-control-label" for="wallet">Wallet</label>
+                            </div>
+                        </div> -->
+                    </div>
+                    </div>
+
+                    <!-- Coupon Code Section -->
+                    <div class="row mb-5">
+                        <div class="col-md-12">
+                            <h2 class="h3 mb-3 text-black">Coupon Code</h2>
+                            <div class="p-3 p-lg-5 border bg-white">
+                                <label for="c_code" class="text-black mb-3">Enter your coupon code if you have one</label>
+                                <div class="input-group w-75 couponcode-wrap">
+                                    <div>
+                                        <input type="text" class="form-control me-2" id="coupon-code" placeholder="Coupon Code" aria-label="Coupon-code" aria-describedby="button-addon2">
+                                        <p id="expiry" style="color: red;"></p>
+                                    </div>
+                                    <div class="input-group-append">
+                                        <button class="btn" style="height: 60px;" type="button" id="coupon-button">Apply</button>
+                                    </div>
+                                    <input type="hidden" name="discountPercentage" id="discount-percentage" value="">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Your Order Section -->
+                <div class="col-lg-6">
+                    <div class="row mb-5">
+                        <div class="col-md-12">
+                            <h2 class="h3 mb-3 text-black">Your Order</h2>
+                            <div class="p-3 p-lg-5 border bg-white">
+                                <table class="table site-block-order-table mb-5">
+                                    <thead>
+                                        <th>Product</th>
+                                        <th>Total</th>
+                                    </thead>
+                                    <% var total = 0
+                                    cart.items.forEach(item => { %>
+                                    <tbody>
+                                        <tr>
+                                            <td style="font-size: 18px;">
+                                                <%= item.product.name %><strong class="mx-2">x</strong><%= item.quantity %>
+                                            </td>
+                                            <td>
+                                                    <% const productOffer2 = offers.find(offer => offer.category.equals(item.product.category)) %>                                                
+
+                                                    <span id="subtotalId_<%= item.product._id %>">
+                                                        <% if (productOffer2) { %>
+                                                            
+                                                            ₹&nbsp;<%=(item.product.price - (item.product.price * productOffer2.percentage / 100)) * item.quantity %>
+                                                            <% } else { %>
+                                                                ₹&nbsp;<%=item.product.price * item.quantity %>
+                                                                <% } %>
+
+                                                    </span>
+                                                </td>
+                                        </tr>
+                                        
+                                            <% if (productOffer2) { %>
+                                                
+                                                <% total += (item.product.price - (item.product.price * productOffer2.percentage / 100)) * item.quantity %>
+                                            <% } else { %>
+                                                
+                                                <% total += item.product.price * item.quantity %>
+                                            <% } %>
+                                        
+                                        <% }) %>
+                                        <tr>
+                                            
+                                            <tr>
+                                                <td style="font-size: 19px;">
+                                                    Discount 
+                                                </td>
+                                                <td>
+                                                    
+                                                    <strong id="discountr" style="font-size: 20px;"></strong>%
+                                                </td>
+                                            </tr>
+                                            <td class="text-black font-weight-bold">
+                                                <strong style="font-size: 35px;">Order Total</strong>
+                                            </td>
+                                            <td class="text-black font-weight-bold">
+                                                <span style="font-size: 20px;">₹</span>
+                                                <strong id="orderTotal" style="font-size: 20px;"><%= total %></strong>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="form-group">
+                                    <div id="place-order-address-button">
+                                        <button class="btn-black btn">
+                                            Use the selected address and payment
+                                        </button>
+                                    </div>
+                                    <br>
+                                    <br>
+                                    <div id="pay-order"></div>
+                                    <br>
+                                    <br>
+                                    <br>
+                                    <div id="order-id"></div>
+                                    <div id="place-Checkout"></div>
+                                </div>
+                                <h1></h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery, Bootstrap JS, Razorpay JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <!-- Custom Script -->
+    <script> 
+        $(document).ready(function () {
+            $('#place-order-address-button').on('click', function (e) {
+                e.preventDefault();
+                var selectIndex = $('input[type=radio][name="selectedAddress"]:checked').val();
+                console.log(selectIndex);
+                const paymentMethod = $('input[type=radio][name="payment-method"]:checked').val();
+                console.log(paymentMethod);
+                var orderTot = document.getElementById('orderTotal');
+                var orderTotal = orderTot.textContent;
+                if (selectIndex !== undefined && paymentMethod !== undefined) {
+                    const selectedAddress = selectIndex;
+                    $.ajax({
+                        type: 'POST',
+                        url: '/checkout-address',
+                        data: {
+                            selectedAddress: selectedAddress,
+                            orderTotal: orderTotal,
+                            payment: paymentMethod
+                        },
+                        success: function (response) {
+    console.log(response.id + '🤷‍♀️🤷‍♀️🤷‍♀️🤷‍♀️👍❤️❤️❤️');
+    if (response) {
+    console.log("response:", response);
+
+    if (response.codSuccess) {
+        // Success for Cash on Delivery (COD)
+        console.log("COD Success");
+        document.getElementById('place-Checkout').innerHTML = '<a href="/place-order/' + response.id + '"><button class="btn btn-black btn-lg py-3 btn-block" type="submit">Place Order</button></a>';
+    } else if (response.razorpaySuccess) {
+        // Success for Razorpay
+        console.log("respnose.newOrderId:" + response.id);
+        console.log("Razorpay Success");
+        document.getElementById('pay-order').innerHTML = "<p class='btn' id='pay-now'>Pay Now </p>";
+        document.getElementById('place-order-address-button').innerHTML = "";
+        document.getElementById('place-order-address-button').classList.remove('btn-black');
+        document.getElementById('order-id').innerHTML = response.id;
+    } else if (response.walletSuccess) {  
+        console.log("Wallet Success");
+        document.getElementById('place-Checkout').innerHTML = '<a href="/place-order/' + response.id + '"><button class="btn btn-black btn-lg py-3 btn-block" type="submit">Place Order</button></a>';
+
+    } else {
+        console.log("Unknown payment method or error in response");
+    }
+}
+ else {
+        console.log("Error response");
+    }
+},
+
+                        error: function (error) {
+                            console.log(error);
+                        },
+                    });
+                } else if (selectIndex === undefined) {
+                    alert('Please select an address');
+                } else if (paymentMethod === undefined) {
+                    alert('Please select a payment method');
+                }
+            });
+
+ 
+
+            $('#pay-order').on('click', ()=>{
+      console.log("payment clicked")
+      const orderId = document.getElementById('order-id').innerHTML;
+      const amount = document.getElementById('orderTotal').innerHTML;
+      console.log("oderid kittunund"+orderId);
+
+$.ajax({
+    type: 'POST',
+    url: '/createOrder',
+    data: {
+    amount:amount,
+     orderId: orderId,
+    },
+    success: function (response) {
+        console.log("Amount:", response.amount);
+console.log(response);
+razorpayPayment(response);
+    },
+    error: function (error) {
+      console.log(error);
+    },
+  });
+})
+
+  
+function razorpayPayment(order) {
+
+    var options = {
+
+"key": "rzp_test_Z2xOBPsM87hcpf", 
+"amount": order.amount, 
+"currency": "INR",
+"name": "SpeedCart.com",
+"description": "Test Transaction",
+"image": "https://example.com/your_logo",
+"order_id": order.id, 
+"handler": function (response) {
+  //  alert(response.razorpay_payment_id);
+  verifyPayment(response, order)
+},
+"prefill": {
+  "name": "Gaurav Kumar",
+  "email": "gaurav.kumar@example.com",
+  "contact": "9000090000"
+},
+"notes": {
+  "address": "Razorpay Corporate Office"
+},
+"theme": {
+  "color": "#243247"
+}
+};
+var rzp1 = new Razorpay(options);
+rzp1.on('payment.failed', function (response) {
+//    alert(response.error.code);
+  verifyPayment(response, order)
+});
+
+rzp1.open();
+
+}
+
+function verifyPayment(payment, order) {
+const orderId = document.getElementById('order-id').innerHTML;
+console.log(orderId+"orderid");
+
+console.log('inside payment')
+// showLoader()
+$.ajax({
+  url: '/verifypayment',
+  data: {
+    payment,
+    order,
+    orderId
+  },
+  method: 'post',
+  success: (response) => {
+
+    if (response.status) {
+      alert('payment success')
+      // hideLoader()
+      // document.getElementById('place-Checkout').innerHTML = <a href="/user/place-order/${orderId}"><button class="btn btn-black btn-lg py-3 btn-block" type="submit">Place Order</button></a>;
+
+      location.href = `/place-order/${orderId}`;
+
+    } else {
+      // alert("payment failed")
+      // hideLoader()
+      location.href = '/payment-failed'
+    }
+  }
+})
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$('#coupon-button').on('click', function (e) {
+        e.preventDefault();
+        console.log('Button clicked');
+        var couponCodeInput = $('#coupon-code');
+        var couponCode = couponCodeInput.val();
+
+        $.ajax({
+            type: 'POST',
+            url: '/checkCoupon',
+            data: { couponCode: couponCode },
+            success: function (response) {
+                if (response.valid) {
+                    // Coupon is valid, display success message and disable editing
+                    $("#expiry").text(response.message);
+                    couponCodeInput.prop('disabled', true);
+                    couponCodeInput.addClass('success');
+                    // Update the value of discountPercentage
+                    $("#discount-percentage").val(response.discountPercentage);
+
+                    // Update the content of the discountr element
+                    $("#discountr").text(response.discountPercentage);
+
+                    // Calculate the discounted price
+                    var total = parseFloat($("#orderTotal").text());
+                    var discount = parseFloat(response.discountPercentage);
+                    var discountedPrice = total - (total * discount / 100);
+
+                    // Update the total price after discount
+                    $("#orderTotal").text(discountedPrice.toFixed(2));
+
+                } else {
+                    // Coupon is not valid, display an error message
+                    $("#expiry").text(response.message);
+                    couponCodeInput.addClass('error');
+                }
+            },
+            error: function (error) {
+                console.error('Error checking coupon:', error);
+                // Handle error, e.g., display a generic error message
+                $("#expiry").text('Error checking coupon. Please try again.');
+                couponCodeInput.addClass('error');
+            }
+        });
+    });
+
+
+
+
+    
+        });
+        
+
+
+
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+  
+   
+
+
+    </script>
+
+    <!-- Include Footer Partial -->
+
+    <!-- Additional Scripts -->
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/tiny-slider.js"></script>
+    <script src="js/custom.js"></script>
+
+</body>
+
+</html>

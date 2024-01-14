@@ -1,0 +1,414 @@
+<%- include('../layouts/header.ejs') %>
+    <%- include('./userheader.ejs') %>
+        <!DOCTYPE html>
+        <html lang="en">
+
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>Bootstrap demo</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+                integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+                crossorigin="anonymous">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+                integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+                crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+            <style>
+                 .gradient-custom {
+            background: #cd9cf2;
+            background: -webkit-linear-gradient(to top left, rgba(205, 156, 242, 1), rgba(246, 243, 255, 1));
+            background: linear-gradient(to top left, rgba(205, 156, 242, 1), rgba(246, 243, 255, 1))
+        }
+
+        /* Add your custom styles here */
+
+        .order-card {
+            border-radius: 10px;
+        }
+
+        .order-header {
+            background-color: #f3f3f3;
+        }
+
+        .receipt-info {
+            color: #a8729a;
+        }
+
+        .product-image {
+            width: 100%;
+            max-width: 150px;
+            /* Adjust the maximum width as needed */
+            height: auto;
+        }
+
+                /* Add more styles as needed */
+            </style>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+                crossorigin="anonymous"></script>
+            </body>
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        </head>
+
+        <body>
+            <hr>
+    <!-- Add Bootstrap classes to the existing code -->
+    <link rel="stylesheet" href="dist/css/main.css?v=1628755089081">
+    <aside class="aside is-placed-left">
+        <div class="aside-tools">
+            <div>
+                My <a href="/home" class="font-black">Profile</a>
+            </div>
+        </div>
+        <div class="menu is-menu-main">
+            <!-- Add Bootstrap classes to the menu items -->
+            <p class="menu-label">General</p>
+            <ul class="menu-list">
+                <li class="">
+                    <a href="/showorders">
+                        <span>-</span>
+                        <span class="menu-item-label">Show Orders</span>
+                    </a>
+                </li>
+            </ul>
+            <ul class="menu-list">
+                <li class="--set-active-tables-html">
+                    <a href="/changepassword">
+                        <span>-</span>
+                        <span class="menu-item-label">Change Password</span>
+                    </a>
+                </li>
+                <li class="--set-active-forms-html">
+                    <a href="/canceledorders">
+                        <span>-</span>
+                        <span class="menu-item-label">Cancelled Orders</span>
+                    </a>
+                </li>
+                <li class="--set-active-profile-html">
+                    <a href="/wallethistory">
+                        <span>-</span>
+                        <span class="menu-item-label">Wallet History</span>
+                    </a>
+                </li>
+                <li class="--set-active-profile-html">
+                    <a href="/editprofile">
+                        <span>-</span>
+                        <span class="menu-item-label">Edit Profile</span>
+                    </a>
+                </li>
+            </ul>
+            <p class="menu-label">About</p>
+            <ul class="menu-list">
+                <li>
+                    <a href="/userprofile" class="has-icon">
+                        <span class="icon"><i class="mdi mdi-help-circle"></i></span>
+                        <span class="menu-item-label">My Details</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/home" class="has-icon">
+                        <span class="icon"><i class="mdi mdi-github-circle"></i></span>
+                        <span class="menu-item-label">Home</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/logout" class="has-icon">
+                        <span class="icon"><i class="mdi mdi-github-circle"></i></span>
+                        <span class="menu-item-label">Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </aside>
+    <section class="is-title-bar">
+        <div class="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
+            <ul>
+                <li>my profile</li>
+                <li>
+                    <h1 class="text-info">show orders</h1>
+                </li>
+            </ul>
+        </div>
+    </section>
+            <% orders.forEach(order=> { %>
+                <% if (order.items.length> 0) { %>
+
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <!-- <p class="lead fw-normal mb-0 receipt-info">Receipt</p> -->
+                            <% if (order.orderStatus==='Delivered' ) { %>
+                                <button id="downloadBtn" class="btn btn-dark text-white">Download Invoice</button>
+                                <% } %>
+                                    <input type="hidden" id="receipt-info" value="<%= order._id %>">
+                                    <p class="small text-muted mb-0">Receipt Voucher : <%= order._id %>
+                                    </p>
+                        </div>
+                        <% order.items.forEach(item=> { %>
+                            <div class="card shadow border mb-4" style="border-radius: 10px;">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col-md-3">
+                                            <img src="/productImages/<%= item.image %>" class="img-fluid product-image"
+                                                alt="Product">
+                                        </div>
+                                        <div class="col-md-3 text-center">
+                                            <p class="text-muted mb-0">
+                                                <%= item.name %>
+                                            </p>
+                                        </div>
+                                        <!-- <span class="badge badge-info"> discount:
+                                        </span> -->
+
+
+                                        <div class="col-md-3 text-center">
+                                            <p class="text-muted mb-0 small">Qty: <%= item.quantity %>
+                                            </p>
+                                        </div>
+                                        <div class="col-md-3 text-center">
+                                            <!-- <p class="text-muted mb-0">orginal price:
+                                        </p> -->
+                                            <% if(item.return===false) {%>
+                                                <p>Return Request Was Sent.</p>
+                                                <%} else if(item.return===true){%>
+                                                    <p class="badge-info">Product was returned.</p>
+                                                   
+                                                        <%} else{%>
+                                                            <% if(order.orderStatus==="Delivered") {%>
+
+                                                                <a href="/returnorder/<%= order._id %>/<%= item._id %>"
+                                                                    class="return-product btn btn-warning text-white">Return
+                                                                    Order</a>
+                                                                <%}%>
+
+                                                                    <%}%>
+                                                                        <!-- 
+                                                data-item-id="<%= item._id %>"
+                                            data-order-id="<%= order._id %>"
+                                            onclick="returnProduct(this)">Return Product</button>
+                                             -->
+
+
+
+
+                                        </div>
+                                    </div>
+                                    <hr class="mb-4" style="background-color: #e0e0e0; opacity: 1;">
+
+                                </div>
+
+                            </div>
+                            <div class="d-flex justify-content-between mb-5">
+                                <p class="text-muted mb-0">Receipt Voucher : <%= order._id %>
+                                </p>
+                                
+                                <!-- <p class="text-muted mb-0"><span class="fw-bold me-4">Delivery Charges</span>
+                                    Free</p> -->
+                                <div class="d-flex justify-content-between pt-2">
+                                    <!-- <p class="fw-bold mb-0">Order Details</p> -->
+                                    <p class="text-muted mb-0"><span class="fw-bold me-4">Total</span>
+                                        <%= item.price * item.quantity %>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row d-flex align-items-center">
+                                <div class="col-md-2">
+                                    <p class="text-muted mb-0 small">Track Order</p>
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="progress" style="height: 26px; border-radius: 36px;">
+                                        <% if (order.orderStatus==='Order Placed' ) { %>
+                                            <div class="progress-bar" role="progressbar"
+                                                style="width: 0%; border-radius: 16px; background-color: #a8729a;"
+                                                aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                                                Order Placed
+                                            </div>
+                                            <% } else if (order.orderStatus==='Packed' ) { %>
+                                                <div class="progress-bar" role="progressbar"
+                                                    style="width: 50%; border-radius: 16px; background-color: #a8729a;"
+                                                    aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+                                                    Packed
+                                                </div>
+                                                <% } else if (order.orderStatus==='Shipping' ) { %>
+                                                    <div class="progress-bar" role="progressbar"
+                                                        style="width: 75%; border-radius: 16px; background-color: #a8729a;"
+                                                        aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
+                                                        Shipping
+                                                    </div>
+                                                    <% } else if (order.orderStatus==='Out for Delivery' ) { %>
+                                                        <div class="progress-bar" role="progressbar"
+                                                            style="width: 90%; border-radius: 16px; background-color: #a8729a;"
+                                                            aria-valuenow="90" aria-valuemin="0" aria-valuemax="100">
+                                                            Out for Delivery
+                                                        </div>
+                                                        <% } else if (order.orderStatus==='Delivered' ) { %>
+                                                            <div class="progress-bar" role="progressbar"
+                                                                style="width: 100%; border-radius: 16px; background-color:  #a8729a;"
+                                                                aria-valuenow="100" aria-valuemin="0"
+                                                                aria-valuemax="100">
+                                                                Delivered
+                                                            </div>
+                                                            <% } %>
+
+
+
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                            <% }) %>
+
+
+
+                                <!-- from here -->
+
+
+                                <!-- <div class="d-flex justify-content-between pt-2">
+                                        <p class="text-muted mb-0">Invoice Number : 788152</p>
+                                        <p class="text-muted mb-0"><span class="fw-bold me-4">Discount</span> $19.00</p>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between">
+                                        <p class="text-muted mb-0">Invoice Date : 22 Dec, 2019</p>
+                                        <p class="text-muted mb-0"><span class="fw-bold me-4">GST 18%</span> 123</p>
+                                    </div> -->
+
+
+                                <% if (order.orderStatus !=='Delivered' ) { %>
+
+                                    <button class="cancel-order btn btn-danger text-white"
+                                        data-order-id="<%= order._id %>" onclick="confirmRemove()">Cancel Order</button>
+                                    <% } %>
+
+
+                                        <% if (order.orderStatus==='Delivered' ) { %>
+                                            <% if (returnorder && returnorder.some(returnOrder=> returnOrder.orderno ===
+                                                String(order._id))) { %>
+                                                <% if ( returnorder && returnorder.some(returnOrder=>
+                                                    returnOrder.orderno
+                                                    === String(order._id) && returnOrder.status === 'approved')
+                                                    ) { %>
+                                                    <p>return approved</p>
+                                                    <% }else{ %>
+                                                        <p class="badge-dark rounded" style="width: 170px">return
+                                                            approval
+                                                            pending</p>
+                                                        <% } %>
+                                                            <% }else{ %>
+                                                                
+                                                                <% } %>
+                                                                    <% } %>
+                                                                        <hr>
+
+
+
+
+
+
+                    </div>
+                    <% } else { %>
+
+                        <% } %>
+                            <% }) %>
+
+
+                                
+                                <script>
+                                    //                 $(document).on('click', '.return-product', function() {
+                                    //     const orderId = $(this).data('order-id');
+                                    //     const itemId = $(this).data('item-id');
+                                    //     console.log("cancel product", orderId, itemId);
+
+                                    //     // Send AJAX request to cancel the product
+                                    //     $.ajax({
+                                    //         type: 'POST',
+                                    //         url: `/cart/returnproductseperate/${orderId}/${itemId}`,
+                                    //         success: function (response) {
+                                    //             // Handle success
+                                    //             console.log('Product cancelled successfully');
+                                    //             // Update the UI or perform any additional tasks
+                                    //         },
+                                    //         error: function (error) {
+                                    //             // Handle error
+                                    //             console.error('Error cancelling product:', error);
+                                    //         }
+                                    //     });
+                                    // });
+
+                                    //                 </script>
+
+
+                                <script>
+                                    const downloadButton = document.getElementById('downloadBtn');
+                                    const receipt = document.getElementById('receipt-info');
+
+                                    downloadButton.addEventListener('click', async () => {
+                                        try {
+                                            const id = receipt.value
+                                            console.log("😂😍", id);
+
+                                            const response = await fetch(`/download-invoice/${id}`);
+                                            const blob = await response.blob();
+                                            // Create a link element and trigger the download
+                                            const link = document.createElement('a');
+                                            link.href = window.URL.createObjectURL(blob);
+                                            link.download = 'invoice.pdf';
+                                            link.click();
+                                        } catch (error) {
+                                            console.error('Error downloading invoice:', error);
+                                        }
+                                    }); </script>
+                                <script>
+
+
+                                    $(document).ready(function () {
+                                        // Handle click event on cancel order button
+                                        $('.cancel-order').on('click', function (e) {
+                                            e.preventDefault();
+                                            console.log("cancel order");
+                                            // Reference the clicked button
+                                            var cancelButton = $(this);
+
+                                            // Get the order ID from the data attribute
+                                            var orderId = cancelButton.data('order-id');
+                                            console.log("👌👌👌👌");
+
+                                            // Use a simple alert instead of SweetAlert
+                                            var userConfirmation = confirm("Are you sure you want to cancel this order?");
+
+                                            // If the user confirms the action, proceed with the cancellation
+                                            if (userConfirmation) {
+                                                // Send AJAX request to cancel the order
+                                                $.ajax({
+                                                    type: 'POST',
+                                                    url: `/cart/cancelorder/${orderId}`,
+                                                    success: function (response) {
+                                                        // Handle success, update the UI or do any additional tasks
+                                                        console.log('Order cancelled successfully');
+
+                                                        // Check if the cancellation was successful on the server
+                                                        if (response === 'success') {
+                                                            // Optionally update the UI or perform additional tasks
+                                                            // For example, remove the order from the UI
+                                                            cancelButton.closest('.order-item').remove();
+                                                        } else {
+                                                            console.error('Error cancelling order. Server response:', response);
+                                                        }
+                                                    },
+                                                    error: function (error) {
+                                                        // Handle error, show a message or log the error
+                                                        console.error('Error cancelling order:', error);
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    });
+
+                                </script>
+
+
+
+
+
+        </html>

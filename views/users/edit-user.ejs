@@ -1,0 +1,57 @@
+<%- include('../layouts/header.ejs') %>
+    <%- include('./userheader.ejs') %>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.9.0/dist/sweetalert2.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.9.0/dist/sweetalert2.all.min.js"></script>
+
+</head>
+
+
+<body>
+  <%- include('sidebar.ejs') %>
+  <section class="is-title-bar">
+    <div class="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
+      <ul>
+        <li>my profile</li>
+        <li><h1 class="text-info">edit profile</h1></li>
+      </ul>
+     
+    </div>
+  </section>
+
+<div class="container my-5">
+
+  <form action="" method="post">
+    <div class="mb-3">
+      <label for="name" class="form-label">Name</label>
+      <input type="text" class="form-control" id="name" name="name" placeholder="Enter name" value="<%= user.name %>" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" value="<%= user.email %>" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="mno" class="form-label">Mobile</label>
+      <input type="text" class="form-control" id="mno" name="mno" placeholder="Enter mobile" value="<%= user.mobile %>" required>
+    </div>
+
+    <input type="hidden" name="id" value="<%= user._id %>">
+
+    <button type="submit" class="btn btn-primary">Change Value</button>
+  </form>
+
+  <a href="/admin" class="btn btn-secondary mt-3">Go to Dashboard</a>
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Page Title</title>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.15.2/css/all.css" integrity="your-integrity-code" crossorigin="anonymous">
+    <style>
+        .trash-icon {
+        font-size: 20px;
+        color: #dc3545;
+    }
+
+    .trash-icon:hover {
+        color: #bd2130;
+    }
+    </style>
+</head>
+
+<body>
+    <%- include('../layouts/header.ejs') %>
+
+        <%- include('./userheader.ejs') %>
+
+            <div class="untree_co-section before-footer-section">
+                <div class="container">
+                    <div class="row mb-5">
+                        <form class="col-md-12" method="post">
+                            <div class="site-blocks-table">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th class="product-thumbnail">Image</th>
+                                            <th class="product-name">Product</th>
+                                            <th class="product-price">Price</th>
+                                            <th class="product-quantity">Quantity</th>
+                                            <th class="product-total">Total</th>
+                                            <th class="product-remove">Remove</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        <% if (!cart || cart.items.length===0){ %>
+
+                                            <h1>Cart is Empty</h1>
+
+                                            <% } else { %>
+
+
+                                                <% var total=0; cart.items.forEach(item=> { %>
+                                                    <tr class="product-item">
+                                                        <td class="product-thumbnail">
+                                                            <img src="/productImages/<%= item.product.images[0] %>"
+                                                                alt="Image" class="img-fluid reduced-size"
+                                                                style="height: 100px;width: 100px;">
+                                                        </td>
+                                                        <td class="product-name">
+                                                            <h2 class="h5 text-black">
+                                                                <%= item.product.name %>
+                                                            </h2>
+                                                        </td>
+                                                        <% const productOffer=offers.find(offer=>
+                                                            offer.category.equals(item.product.category)) %>
+                                                            <td>
+                                                                <% if(productOffer){ %>
+
+                                                                    ₹ &nbsp;<%= item.product.price - (item.product.price
+                                                                        * productOffer.percentage / 100) %>
+                                                                        <%} else{ %>
+
+                                                                            ₹ &nbsp;<%= item.product.price %>
+
+                                                                                <% } %>
+                                                            </td>
+
+                                                            <td>
+                                                                <div class="input-group mb-3 d-flex align-items-center quantity-container"
+                                                                    style="max-width: 120px;">
+                                                                    <div class="input-group-prepend">
+                                                                        <button class="btn btn-outline-black decrease"
+                                                                            type="button">-</button>
+
+
+
+                                                                    </div>
+                                                                    <input type="text"
+                                                                        data-product-id="<%= item.product._id %>"
+                                                                        class="form-control text-center quantity-amount"
+                                                                        value="<%= item.quantity %>" max="10" disabled
+                                                                        placeholder=""
+                                                                        aria-label="Example text with button addon"
+                                                                        aria-describedby="button-addon1">
+                                                                    <div class="input-group-append">
+                                                                        <% if (item.product.stock> 0) { %>
+                                                                            <button
+                                                                                class="btn btn-outline-black increase"
+                                                                                type="button">+</button>
+                                                                            <% } else { %>
+                                                                                <a>Out of stock</a>
+
+                                                                                <% } %>
+
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                <% const productOffer2=offers.find(offer=>
+                                                                    offer.category.equals(item.product.category)) %>
+
+                                                                    <span id="subtotalId_<%= item.product._id %>">
+                                                                        <% if (productOffer2) { %>
+
+                                                                            ₹&nbsp;<%=(item.product.price -
+                                                                                (item.product.price *
+                                                                                productOffer.percentage / 100)) *
+                                                                                item.quantity %>
+                                                                                <% } else { %>
+                                                                                    ₹&nbsp;<%=item.product.price *
+                                                                                        item.quantity %>
+                                                                                        <% } %>
+
+                                                                    </span>
+                                                            </td>
+
+                                                            <td><button class="btn btn-black btn-sm remove-product" ₹
+                                                                    &nbsp;<%=item.product.price %>
+                                                                    data-product-id="<%= item.product._id %>"
+                                                                        onclick="productAdd()"><i class="far fa-trash-alt trash-icon"></i></button></td>
+                                                    </tr>
+
+
+                                                    <td>
+                                                        <% if (productOffer2) { %>
+
+                                                            <% total +=(item.product.price - (item.product.price *
+                                                                productOffer.percentage / 100)) * item.quantity %>
+                                                                <% } else { %>
+
+                                                                    <% total +=item.product.price * item.quantity %>
+                                                                        <% } %>
+                                                    </td>
+                                                    <%}) %>
+
+                                                        <% } %>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row mb-5">
+
+
+                                <div class="col-md-6">
+
+                                    <a href="/"> <button class="btn btn-outline-black btn-sm btn-block">Continue
+                                            Shopping</button></a>
+
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-md-6 pl-5">
+                            <div class="row justify-content-end">
+                                <div class="col-md-7">
+                                    <div class="row">
+                                        <div class="col-md-12 text-right border-bottom mb-5">
+                                            <h3 class="text-black h4 text-uppercase">Cart Totals</h3>
+                                        </div>
+                                    </div>
+
+
+                                    <!-- <div class="row mb-5">
+                          <div class="col-md-6">
+                              <span class="text-black">Subtotal</span>
+                          </div>
+                          <div class="col-md-6 text-right" style="display: flex;">
+                              <strong>₹</strong> &nbsp;<strong class="text-black"></strong>
+                          </div>
+                      </div> -->
+
+                                    <div class="row mb-5">
+                                        <div class="col-md-6">
+                                            <span class="text-black">Total</span>
+                                        </div>
+                                        <div class="col-md-6 text-right" style="display: flex;">
+                                            <strong>₹</strong> &nbsp;<strong class="text-black" id="totalprice"
+                                                name="totaAmount">
+                                                <%= total %>
+                                            </strong>
+                                        </div>
+                                    </div>
+
+                                    <!-- <input type=""  id="-input" name="total-"> -->
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <a href="/cart/checkout">
+                                                <% if (!cart || cart.items.length===0){ %>
+                                                    <% } else { %>
+                                                        <button class="btn btn-black btn-lg py-3 btn-block"
+                                                            onclick="window.location='checkout.html'">Proceed To
+                                                            Checkout</button>
+                                                        <% } %>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+                <!-- Include jQuery from a CDN -->
+                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+                <script>
+                    $(document).ready(function () {
+                        // Handle click event on remove button
+                        $('.remove-product').on('click', function (e) {
+                            e.preventDefault();
+
+                            // Get the product ID from the data attribute
+                            var productId = $(this).data('product-id');
+
+                            // Reference the product item
+                            var productItem = $(this).closest('.product-item');
+                            console.log('Product Item:', productItem);
+
+                            // Send AJAX request to remove the product
+                            $.ajax({
+                                type: 'POST',
+                                url: `/cartremove/${productId}`,
+                                success: function (response) {
+                                    // Handle success, update the UI or do any additional tasks
+                                    console.log('Product removed successfully');
+
+                                    // Check if the removal was successful on the server
+                                    if (response === 'success') {
+                                        // Remove the product item from the UI
+                                        productItem.remove();
+                                    } else {
+                                        console.error('Error removing product. Server response:', response);
+                                    }
+                                },
+                                error: function (error) {
+                                    // Handle error, show a message or log the error
+                                    console.error('Error removing product:', error);
+                                }
+                            });
+                        });
+                    });
+                    function updateCart(productId, quantity, totalPrice, value) {
+                        console.log('Sending request to update cart. ProductId:', productId, 'Quantity:', quantity);
+                        const totalAmount = document.getElementById('totalprice').textContent;
+                        console.log(totalAmount);
+                        $.ajax({
+                            url: '/cart/updateqty',
+                            method: 'POST',
+                            data: {
+                                productId: productId,
+                                quantity: quantity,
+                                totalPrice: totalAmount,
+                                dosomething: value
+                            },
+                            success: function (response) {
+
+                                let totalPrice = 0;
+                                console.log(response)
+
+                                if (response.subtotal && Array.isArray(response.subtotal)) {
+                                    response.subtotal.forEach(subtotalData => {
+                                        const productId = subtotalData.productId;
+                                        const subtotal = subtotalData.subtotal;
+                                        console.log(subtotal)
+
+                                        const subtotalElement = document.getElementById(`subtotalId_${productId}`);
+                                        if (subtotalElement) {
+                                            subtotalElement.innerHTML = `₹ ${subtotal}`;
+                                        }
+                                        totalPrice = response.subtotal.reduce((acc, item) => acc + item.subtotal, 0);
+                                        // console.log(totalPrice)
+
+
+                                    });
+                                    document.getElementById("totalprice").innerHTML = totalPrice;
+
+                                } else {
+                                    console.error('Invalid response format: response.subtotals is not an array.');
+                                }
+
+
+                            },
+                            error: function (error) {
+                                console.error('Error updating cart: ', error);
+                            }
+                        });
+                    }
+
+
+
+
+
+
+
+                    $(document).ready(function () {
+                        $('.increase').click(function () {
+                            var inputElement = $(this).closest('.quantity-container').find('.quantity-amount');
+                            var productId = inputElement.data('product-id');
+                            var currentQuantity = parseInt(inputElement.val());
+                            var newQuantity = currentQuantity + 1;
+                            var totalPriceElement = document.getElementById('totalprice');
+
+                            var totalPrice = totalPriceElement.textContent
+
+
+
+                            console.log('Increase button clicked. ProductId:', productId, 'New Quantity:', newQuantity, totalPrice);
+                            inputElement.val(newQuantity);
+                            updateCart(productId, newQuantity, totalPrice, false);
+                        });
+
+
+
+
+
+                        $('.decrease').click(function () {
+                            var inputElement = $(this).closest('.quantity-container').find('.quantity-amount');
+                            var productId = inputElement.data('product-id');
+                            var currentQuantity = parseInt(inputElement.val());
+                            if (currentQuantity > 1) {
+                                var newQuantity = currentQuantity - 1;
+                                var totalPriceElement = document.getElementById('totalprice');
+
+                                var totalPrice = totalPriceElement.textContent
+
+
+                                console.log('Decrease button clicked. ProductId:', productId, 'New Quantity:', newQuantity, totalPrice);
+                                inputElement.val(newQuantity);
+                                updateCart(productId, newQuantity, totalPrice, true);
+                            }
+                        });
+                    });
+                    function productAdd(e) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Removed...",
+                            text: "Product was removed!",
+                        });
+                    }
+
+
+
+
+
+                </script>
+</body>
+<%- include('userfooter.ejs') %>
+    <%- include('../layouts/footer.ejs') %>
+
+</html>

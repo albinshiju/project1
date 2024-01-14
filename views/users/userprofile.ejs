@@ -1,0 +1,184 @@
+<%- include('../layouts/header.ejs') %>
+    <%- include('./userheader.ejs') %>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>User Profile</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        .gradient-custom {
+            /* fallback for old browsers */
+            background: #cd9cf2;
+            /* Chrome 10-25, Safari 5.1-6 */
+            background: -webkit-linear-gradient(to top left, rgba(205, 156, 242, 1), rgba(246, 243, 255, 1));
+            /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+            background: linear-gradient(to top left, rgba(205, 156, 242, 1), rgba(246, 243, 255, 1))
+        }
+
+
+    </style>
+</head>
+
+<body> 
+  <%- include('sidebar.ejs') %>
+
+    <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="#">
+        User Profile        
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav mr-auto">
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/showorders">Show Orders</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/changepassword">Change Password</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/canceledorders">Cancelled Orders</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/wallethistory">Wallet History</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/availablecoupon">available coupons</a>
+          </li>
+         
+        </ul>
+        
+      </div>
+    </nav> -->
+  
+
+    <section >
+      <!-- <div class="container py-5">
+        <div class="row">
+          <div class="col-lg-4">
+            <div class="card mb-4">
+              <div class="card-body text-center bg-dark text-white">
+                <img src="https://assets.teenvogue.com/photos/5a8c93a25dc2a556a4c6b7d1/1:1/w_666,h_666,c_limit/riverdale-cole-sprouse-jughead-not-singing-in-musical.jpg"
+                  alt="avatar" class="rounded-circle img-fluid" style="width: 100px;">
+                <h5 class="my-3"></h5>
+                <div class="d-flex justify-content-center mb-2">
+                  <a href="/editprofile" class="btn btn-outline-primary">Edit Profile</a>
+                </div>
+              </div>
+            </div>
+          </div> -->
+          <div class="col-lg-8">
+            <div class="card mb-4">
+              <div class="card-body">
+                <div class="row mb-3">
+                  <div class="col-sm-3">
+                    <p class="mb-0"><strong>Name:</strong></p>
+                  </div>
+                  <div class="col-sm-9">
+                    <p class="text-muted mb-0"><%= user.name %></p>
+                  </div>
+                </div>
+                <hr>
+                <div class="row mb-3">
+                  <div class="col-sm-3">
+                    <p class="mb-0"><strong>Referal Code:</strong></p>
+                  </div>
+                  <div class="col-sm-9">
+                    <p class="text-muted mb-0"><%= user.username %></p>
+                  </div>
+                </div>
+                <hr>
+                <div class="row mb-3">
+                  <div class="col-sm-3">
+                    <p class="mb-0"><strong>Email:</strong></p>
+                  </div>
+                  <div class="col-sm-9">
+                    <p class="text-muted mb-0"><%= user.email %></p>
+                  </div>
+                </div>
+                <hr>
+                <div class="row mb-3">
+                  <div class="col-sm-3">
+                    <p class="mb-0"><strong>Phone:</strong></p>
+                  </div>
+                  <div class="col-sm-9">
+                    <p class="text-muted mb-0"><%= user.mobile %></p>
+                  </div>
+                </div>
+                <hr>
+                <div class="row">
+                  <div class="col-sm-3">
+                    <p class="mb-0">Wallet Balance:</p>
+                  </div>
+                  <div class="col-sm-9">
+                    <% if (wallet) { %>
+                        <p class="font-weight-bold">
+                            <span style="font-family: 'Arial Black', sans-serif;">
+                                $<%= wallet.walletBalance %>
+                            </span>
+                        </p>
+                    <% } else { %>
+                        <p class="font-weight-bold text-danger">
+                            <span style="font-family: 'Arial Black', sans-serif;">
+                                Wallet not found
+                            </span>
+                        </p>
+                    <% } %>
+                
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+
+
+<div class="p-3 p-lg-5 border bg-white"><h4>Billing details:</h4>
+  <% if (!addresses) { %>
+      <a href="/user/add-address-checkout-page" class="btn btn-success">Add new address</a>
+  <% } else { %>
+    <% addresses.forEach(address => { %>
+      <% for (let i = 0; i < address.address.length; i++) { %>
+          <!-- Address Card -->
+          <div class="card mb-2">
+              <div class="card-body">
+                  <div class="d-flex justify-content-between">
+                      <div>
+                          <input type="radio" name="selectedAddress" style="height: 25px; width: 25px;" value="<%=  %>" />
+                          <h4 style="font-size: 18px;"><%= address.address[i].firstName %> <%= address.address[i].lastName %></h4>
+                          <p style="font-size: 14px;">+91 <%= address.address[i].phone %></p>
+                          <p style="font-size: 14px;"><%= address.address[i].landmark %></p>
+                          <p style="font-size: 14px;"><%= address.address[i].addressDetail %></p>
+                          <p style="font-size: 14px;"><%= address.address[i].state %>-<%= address.address[i].zip %></p>
+                      </div>
+                      <div>
+                          <a href="/deleteaddress/<%= address.address[i]._id %>" class="btn btn-danger">delete</a>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <!-- End Address Card -->
+          <% } %>
+          <% }); %>
+      <a href="/addaddresscheckoutpage" class="btn btn-success">Add new address</a>
+  <% } %>
+</div>
+
+
+
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,183 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.9.0/dist/sweetalert2.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <style>
+    .error {
+            font-size: 14px;
+            color: #dc3545;
+            font-weight: 600;
+            margin-top: 5px;
+            display: none;
+        }
+</style>
+</head>
+
+<body>
+  <%- include('sidebar.ejs') %>
+
+  <section class="is-title-bar">
+    <div class="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
+      <ul>
+        <li>Admin</li>
+        <li>Add New Products</li>
+        <li>Edit Products</li>
+
+      </ul>
+     
+    </div>
+  </section>
+  <div class="container mt-5">
+    <!-- <h1 class="text-center">edit Products</h1> -->
+
+    <form action="/admin/edit-product?id=<%= product._id %>" method="post" enctype="multipart/form-data" onsubmit="return Validation()">
+      <div class="form-group">
+        <label for="">Product Name</label>
+        <input type="text" name="name" class="form-control" placeholder="Enter name" value="<%= product.name %>" required>
+      </div>
+      <br>
+
+      <div class="form-group">
+        <label for=""> Description</label>
+
+        <input type="text" name="description" class="form-control" placeholder="Enter description" value="<%= product.description %>" required>
+      </div>
+      <br>
+      <div class="form-group">
+        <label for="">Category</label>
+        <select name="category" class="form-control" id="category">
+            <option value="" style="font-size:20px;"><%= data.category.categoryName %></option>
+            <% categories.forEach(function(category) { %>
+                <option value="<%= category._id %>">
+                    <%= category.categoryName %>
+                </option>
+                <% }); %>
+        </select>
+        <div class="text-danger mt-2" id="categoryErr"></div>
+    </div>
+    <br>
+      <div class="form-group">
+        <label for="">Price</label>
+        <input id="price" type="text" name="price" class="form-control" placeholder="Enter price" value="<%= product.price %>" required>
+        <span  class="error">please enter a valid price value</span>
+
+      </div>
+      <br>
+      <div class="form-group">
+        <label for="">Stock</label>
+        <input id="stock" type="text" name="stock" class="form-control" placeholder="Enter stock" value="<%= product.stock %>" required>
+        <span  class="error">please enter a valid stock value</span>
+
+      </div>
+      <br>
+      <div id="existing-images-container">
+        <% if (product.images && product.images.length > 0) { %>
+        <h5>Existing Images:</h5>
+        <% product.images.forEach((image, index) => { %>
+        <a href="#" class="remove-link" data-productid="<%= product._id %>" data-imageindex="<%= index %>">x</a>
+        <img src="/productImages/<%= image %>" alt="Product Image" style="max-width: 100px; max-height: 100px; margin-right: 10px;">
+        <% }) %>
+        <br>
+        <% } %>
+      </div>
+
+      
+
+      <div class="form-group">
+        <input type="file" class="form-control-file"  id="images" name="images" multiple >
+        <br>
+      </div>
+      <br>
+
+      <button type="submit" class="btn btn-primary">Save Changes</button>
+    </form>
+
+    <% if (typeof message !=='undefined' ) { %>
+    <p class="text-danger mt-3">
+      <%= message %>
+    </p>
+    <% } %>
+
+    <a href="/admin/home" class="btn btn-secondary mt-3">Go Back</a>
+  </div>
+
+  <script>
+    function Validation(){
+      var productNameInput = document.getElementById('productname');
+    var stockInput = document.getElementById('stock');
+    var priceInput = document.getElementById('price')
+    var stockValue = parseInt(stockInput.value);
+    var priceValue = parseInt(priceInput.value)
+    // Use nextElementSibling for stock input error span
+    
+    var stockErrorSpan = stockInput.nextElementSibling;
+    var priceErrorSpan = priceInput.nextElementSibling;
+
+
+   
+
+    if (isNaN(stockValue) || stockValue < 0) {
+        stockErrorSpan.textContent = 'Please enter a valid stock value';
+        stockErrorSpan.style.display = 'block';
+        return false;
+    } else {
+        stockErrorSpan.style.display = 'none';
+    }
+    if (isNaN(priceValue) || priceValue < 0) {
+        priceErrorSpan.textContent = 'Please enter a valid price value';
+        priceErrorSpan.style.display = 'block';
+        return false;
+    } else {
+        priceErrorSpan.style.display = 'none';
+    }
+    // Add other validations if needed
+
+    // If all validations pass, return true to allow form submission
+    return true;
+    }
+    $(document).ready(function () {
+      // Add click event listener to all elements with the class 'remove-link'
+      $('.remove-link').click(function (event) {
+        // Prevent the default behavior of the link (e.g., navigating to a new page)
+        event.preventDefault();
+
+        // Retrieve the product ID and image index from the 'data-productid' and 'data-imageindex' attributes
+        const productId = $(this).data('productid');
+        const imageIndex = $(this).data('imageindex');
+        console.log(productId, imageIndex);
+
+        // Make an AJAX request to the '/removeimage' endpoint with the productId and imageIndex as route parameters
+        $.ajax({
+          type: 'GET',
+          url: `/admin/removeimage?productId=${productId}&imageIndex=${imageIndex}`,
+
+          success: function (response) {
+            // Handle the success response here
+            console.log('Success:', response);
+
+            // Optionally, you can perform additional actions after a successful request
+
+            // Remove the deleted image from the existing images container
+            $(`#existing-images-container img:eq(${imageIndex})`).remove();
+            $(`#existing-images-container a:eq(${imageIndex})`).remove();
+          },
+          error: function (error) {
+            // Handle the error response here
+            console.error('Error:', error);
+
+            // Optionally, you can perform additional actions after an error
+          }
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>

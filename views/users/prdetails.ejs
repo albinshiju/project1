@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  
+  <title>Your Page Title</title>
+  <style>
+   
+
+    
+
+    
+  </style>
+</head>
+
+<body>
+   <%- include('../layouts/header.ejs') %>
+  <%- include('./userheader.ejs') %>
+
+  <section class="py-5">
+    <div class="container">
+      <div class="row gx-5">
+       
+
+        <div class="col-lg-6 col-md-12">
+          <div class="image-container" style="width: 100%; display: flex; flex-direction: column; margin-top: 40px;">
+              <div class="big-image" style="height: 70%; display: flex; justify-content: center; align-items: center; border: 1px solid #ddd;">
+                  <img src="productImages/<%= products.images[0] %>" alt="" id="zoom" style="width: 100%; max-height: 100%; object-fit: contain;">
+              </div>
+              <div class="small-images mt-3" style="height: 30%; display: flex; justify-content: space-around; align-items: center;">
+                  <% for (let i = 0; i < products.images.length; i++) { %>
+                      <img src="productImages/<%= products.images[i] %>" alt="" style="max-width: 70px; max-height: 70px; cursor: pointer; transition: transform 0.2s; border: 1px solid #ddd; border-radius: 5px;">
+                  <% } %>
+              </div>
+          </div>
+      </div>
+      
+      
+
+        <main class="col-lg-4">
+          <div class="ps-lg-3">
+            <h4 class="title text-dark" style="font-family: 'Arial', sans-serif; font-size: 1.5em; font-weight: bold;">
+              <%= products.name %>
+            </h4>
+            <% const productOffer = offers.find(offer => offer.category.equals(products.category)) %>
+            <% if(productOffer){ %>
+              <div class="mb-3">
+                <span class="text-muted" style="font-style: italic;">Original price:</span>
+                <span class="h5" style="text-decoration: line-through; color: #999;">₹<%= products.price %></span>
+                <br>
+                <span class="text-muted" style="font-style: italic;">After discount:</span>
+                <span class="h5 badge-primary rounded" style="background-color: #5bc0de; color: #fff; padding: 5px;"> ₹<%= products.price - (productOffer.percentage * products.price/100) %></span>
+              </div>
+            <% } else { %>
+              <div class="mb-3">
+                <span class="h5" style="font-weight: bold; color: #333;"> <%= products.price %>₹</span>
+                <span class="text-muted" style="font-style: italic;">/per item</span>
+              </div>
+            <% } %>
+        
+            <p style="font-family: 'Georgia', serif; font-size: 1.2em; color: #555;">
+              <%= products.description %>
+            </p>
+        
+            <a href="/cart/addtocart/<%=products._id %>" onclick="productAdd()" class="btn btn-primary shadow-0" id="addToCartBtn" style="background-color: #28a745; color: #fff; border: 1px solid #218838;">
+              <i class="me-1 fa fa-shopping-basket rounded"></i> Add to Cart
+            </a>
+          </div>
+        </main>
+       
+        <div class="container">
+          <div class="row">
+              <div class="col-lg-12 mt-5">
+                  <ul class="filter__controls">
+                      <li class="active" data-filter="*">Recommended Items</li>
+                      <!-- <li data-filter=".new-arrivals">New Arrivals</li>
+                      <li data-filter=".hot-sales">Hot Sales</li> -->
+                  </ul>
+              </div>
+          </div>
+          <br>
+          <div class="row product__filter">
+              <% if (productdata.length> 0) { %>
+                  <% for (let i=0; i < 4; i++) { %>
+              <div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 mix new-arrivals">
+                  
+                          <div class="product__item">
+                              <div class="product__item__pic set-bg" data-setbg="">
+                                  <!-- <span class="label">New</span> -->
+                                  <ul class="">
+                                      <li><a href="/prdetails?id=<%=productdata[i]._id %>"><img src="/productImages/<%= productdata[i].images[0] %>" alt=""></a></li>
+                                      <!-- <li><a href="#"><img src="/productImages/<%= productdata[i].images[0] %>" alt="">
+                                              <span>Compare</span></a></li>
+                                      <li><a href="#"><img src="/productImages/<%= productdata[i].images[0] %>" alt=""></a></li> -->
+                                  </ul>
+                              </div>
+                              <div class="product__item__text">
+                                  <h6><%= productdata[i].name%></h6>
+                                  <a href="/cart/addtocart/<%=productdata[i]._id %>" class="add-cart">+ Add To Cart</a>
+                                  <!-- <div class="rating">
+                                      <i class="fa fa-star-o"></i>
+                                      <i class="fa fa-star-o"></i>
+                                      <i class="fa fa-star-o"></i>
+                                      <i class="fa fa-star-o"></i>
+                                      <i class="fa fa-star-o"></i>
+                                  </div> -->
+                                  <h5>$<%= productdata[i].price%></h5>
+                                  <div class="product__color__select">
+                                      <label for="pc-1">
+                                          <input type="radio" id="pc-1">
+                                      </label>
+                                      <label class="active black" for="pc-2">
+                                          <input type="radio" id="pc-2">
+                                      </label>
+                                      <label class="grey" for="pc-3">
+                                          <input type="radio" id="pc-3">
+                                      </label>
+                                  </div>
+                              </div>
+                          </div>
+                         
+              </div>
+              <% } %>
+              <% } else { %>
+                  <p>products not found</p>
+                  <% } %>
+          </div>
+
+      </div>
+      </div>
+    </div>
+  </section>
+    <script src="Stylish-Magnifying-Glass-Plugin-SergeLand-Image-Zoomer/zoomsl.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    $(document).ready(function(){
+      $('.small-images img').click(function(){
+        var image = $(this).attr('src');
+        $('.big-image img').attr('src', image);
+      });
+      $('#zoom').imagezoomsl({
+        zoomrange: [4,4]
+      });
+    });
+   
+  function productAdd(e){
+      Swal.fire({
+  position: "top-end",
+  icon: "success",
+  title: "Product Added to cart",
+  showConfirmButton: false,
+  timer: 1500
+});
+    }
+</script>
+
+  
+  </script>
+</body>
+<%- include('userfooter.ejs') %>
+</html>

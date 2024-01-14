@@ -1,0 +1,159 @@
+<%- include('../layouts/header.ejs') %>
+    <%- include('./userheader.ejs') %>
+        <br>
+        <!DOCTYPE html>
+        <html lang="en">
+
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Return Order Template</title>
+
+            <!-- Bootstrap 4 CSS -->
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    margin: 20px;
+                }
+
+                .return-form {
+                    max-width: 600px;
+                    margin: 0 auto;
+                    padding: 20px;
+                    border: 1px solid #ddd;
+                    border-radius: 8px;
+                }
+
+                input,
+                textarea {
+                    margin-bottom: 16px;
+                }
+
+                .radio-group {
+                    display: flex;
+                    flex-direction: column;
+                }
+
+                .radio-group label {
+                    margin-bottom: 8px;
+                }
+
+                .return-items img {
+                    width: 100px;
+                    height: 100px;
+                    margin-right: 10px;
+                    margin-bottom: 10px;
+                }
+
+                button {
+                    background-color: #4CAF50;
+                    color: white;
+                    padding: 10px 20px;
+                    border: none;
+                    border-radius: 4px;
+                    cursor: pointer;
+                }
+
+                button:hover {
+                    background-color: #45a049;
+                }
+            </style>
+        </head>
+
+        <body>
+
+            <div class="return-form">
+                <h2>Return Cart</h2>
+                <h1><%= order.items[0].name  %></h1>
+                <form action="/returnorder/<%= order._id  %>/<%= order.items[0]._id %>" method="post">
+                    <div class="form-group">
+                        <label for="orderNumber">Order Number:</label>
+                        <input type="text" class="form-control" id="orderNumber" name="orderNumber"
+                            value="<%= order._id %>" readonly required>
+                    </div>
+                    <div class="form-group">
+                        <label for="itemNumber">Item Number:</label>
+                        <input type="text" class="form-control" id="itemNumber" name="itemNumber"
+                            value="<%= order.items[0]._id %>" readonly required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="returnReason">Return Reason:</label>
+                        <div class="radio-group">
+                            <div class="custom-control custom-radio">
+                                <input type="radio" id="reason1" name="returnReason"
+                                    value="The products were missing from the cart." class="custom-control-input">
+                                <label class="custom-control-label" for="reason1">The products were missing from the
+                                    cart.</label>
+                            </div>
+
+                            <div class="custom-control custom-radio">
+                                <input type="radio" id="reason2" name="returnReason"
+                                    value="The products were found damaged." class="custom-control-input">
+                                <label class="custom-control-label" for="reason2">The products were found
+                                    damaged.</label>
+                            </div>
+
+                            <div class="custom-control custom-radio">
+                                <input type="radio" id="reason3" name="returnReason"
+                                    value="The products are different from what I ordered."
+                                    class="custom-control-input">
+                                <label class="custom-control-label" for="reason3">The products are different from what I
+                                    ordered.</label>
+                            </div>
+
+                            <div class="custom-control custom-radio">
+                                <input type="radio" id="reason4" name="returnReason" value="The packaging was damaged."
+                                    class="custom-control-input">
+                                <label class="custom-control-label" for="reason4">The packaging was damaged.</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group return-items">
+                        <label for="returnItems">Items In Cart:</label>
+                        <div class="d-flex flex-wrap">
+                            <% order.items.forEach(item=> { %>
+                                <img src="/productImages/<%= item.image %>" alt="<%= item.image %>">
+                                <% }) %>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Submit Return</button>
+                </form>
+            </div>
+
+            <!-- Bootstrap 4 JavaScript (optional) -->
+            <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+            <!-- <script>
+                $(document).on('click', '.return-product', function () {
+                    const orderId = $(this).data('order-id');
+                    const itemId = $(this).data('item-id');
+                    console.log("cancel product", orderId, itemId);
+
+                    // Send AJAX request to cancel the product
+                    $.ajax({
+                        type: 'POST',
+                        url: `/cart/returnproductseperate/${orderId}/${itemId}`,
+                        success: function (response) {
+                            // Handle success
+                            console.log('Product cancelled successfully');
+                            // Update the UI or perform any additional tasks
+                        },
+                        error: function (error) {
+                            // Handle error
+                            console.error('Error cancelling product:', error);
+                        }
+                    });
+                });
+
+            </script> -->
+
+
+        </body>
+
+        </html>

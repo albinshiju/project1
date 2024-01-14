@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+        integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        .gradient-custom {
+            background: #cd9cf2;
+            background: -webkit-linear-gradient(to top left, rgba(205, 156, 242, 1), rgba(246, 243, 255, 1));
+            background: linear-gradient(to top left, rgba(205, 156, 242, 1), rgba(246, 243, 255, 1))
+        }
+
+        /* Add your custom styles here */
+
+        .order-card {
+            border-radius: 10px;
+        }
+
+        .order-header {
+            background-color: #f3f3f3;
+        }
+
+        .receipt-info {
+            color: #a8729a;
+        }
+
+        .product-image {
+            width: 100%;
+            max-width: 150px; /* Adjust the maximum width as needed */
+            height: auto;
+        }
+
+        /* Add more styles as needed */
+
+    </style>
+     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+     integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+     crossorigin="anonymous"></script>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</head>
+
+<body>
+
+    <section class="h-100 gradient-custom">
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-lg-10 col-xl-8">
+                    <div class="card order-card">
+                        <div class="card-header px-4 py-5 order-header">
+                            <h5 class="text-muted mb-0">My Orders <span class="receipt-info"></span>!</h5>
+                        </div>
+                        <% orders.forEach(order => { %>
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <p class="lead fw-normal mb-0 receipt-info">Receipt</p>
+                                    <p class="small text-muted mb-0">Receipt Voucher : 1KAU9-84UIL</p>
+                                </div>
+
+                                <% order.items.forEach(item => { %>
+                                    <div class="card shadow border mb-4" style="border-radius: 10px;">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col-md-3">
+                                                    <img src="/productImages/<%= item.image %>"
+                                                        class="img-fluid product-image" alt="Product">
+                                                </div>
+                                                <div class="col-md-3 text-center">
+                                                    <p class="text-muted mb-0"><%= item.name %></p>
+                                                </div>
+                                                <div class="col-md-3 text-center">
+                                                    <p class="text-muted mb-0">unit price:<%= item.price %></p>
+                                                </div>
+                                                <div class="col-md-3 text-center">
+                                                    <p class="text-muted mb-0 small">Qty: <%= item.quantity %></p>
+                                                </div>
+                                            </div>
+                                            <hr class="mb-4" style="background-color: #e0e0e0; opacity: 1;">
+                                            <div class="row d-flex align-items-center">
+                                                <div class="col-md-2">
+                                                    <p class="text-muted mb-0 small">Track Order</p>
+                                                </div>
+                                                <div class="col-md-10">
+                                                    <div class="progress" style="height: 6px; border-radius: 16px;">
+                                                        <div class="progress-bar" role="progressbar"
+                                                            style="width: 20%; border-radius: 16px; background-color: #a8729a;"
+                                                            aria-valuenow="65" aria-valuemin="0" aria-valuemax="100">
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex justify-content-around mb-1">
+                                                        <p class="text-muted mt-1 mb-0 small ms-xl-5">Out for delivery
+                                                        </p>
+                                                        <p class="text-muted mt-1 mb-0 small ms-xl-5">Delivered</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% }) %>
+                                    <!-- from here -->
+                                    <div class="d-flex justify-content-between pt-2">
+                                        <p class="fw-bold mb-0">Order Details</p>
+                                        <p class="text-muted mb-0"><span class="fw-bold me-4">Total</span> <%= order.totalprice %>
+                                        </p>
+                                    </div>
+
+                                    <!-- <div class="d-flex justify-content-between pt-2">
+                                        <p class="text-muted mb-0">Invoice Number : 788152</p>
+                                        <p class="text-muted mb-0"><span class="fw-bold me-4">Discount</span> $19.00</p>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between">
+                                        <p class="text-muted mb-0">Invoice Date : 22 Dec, 2019</p>
+                                        <p class="text-muted mb-0"><span class="fw-bold me-4">GST 18%</span> 123</p>
+                                    </div> -->
+
+                                    <div class="d-flex justify-content-between mb-5">
+                                        <p class="text-muted mb-0">Receipt Voucher : <%= order._id %></p>
+                                        <p class="text-muted mb-0"><span class="fw-bold me-4">Delivery Charges</span>
+                                            Free</p>
+                                    </div>
+                                    <!-- this should be printed for every array of products , not each product -->
+                                    <button class="cancel-order" data-order-id="<%= order._id %>" onclick="confirmRemove()">cancel order</button>
+
+                                <!-- Add order details section here -->
+
+                            </div>
+                        <% }) %>
+
+                        <div class="card-footer border-0 px-4 py-5"
+                            style="background-color: #a8729a; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+                            <a href="/user/users-orders" class="text-white">Go to your orders</a>
+                            <!-- <h5 class="d-flex align-items-center justify-content-end text-white text-uppercase mb-0">
+                                Total paid: <span class="h2 mb-0 ms-2">total price</span>
+                            </h5> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <script>
+      $(document).ready(function () {
+        // Handle click event on cancel order button
+        $('.cancel-order').on('click', function (e) {
+            e.preventDefault();
+
+            // Reference the clicked button
+            var cancelButton = $(this);
+
+            // Get the order ID from the data attribute
+            var orderId = cancelButton.data('order-id');
+            console.log("👌👌👌👌");
+
+            // Use a simple alert instead of SweetAlert
+            var userConfirmation = confirm("Are you sure you want to cancel this order?");
+
+            // If the user confirms the action, proceed with the cancellation
+            if (userConfirmation) {
+                // Send AJAX request to cancel the order
+                $.ajax({
+                    type: 'POST',
+                    url: `/cart/cancelorder/${orderId}`,
+                    success: function (response) {
+                        // Handle success, update the UI or do any additional tasks
+                        console.log('Order cancelled successfully');
+
+                        // Check if the cancellation was successful on the server
+                        if (response === 'success') {
+                            // Optionally update the UI or perform additional tasks
+                            // For example, remove the order from the UI
+                            cancelButton.closest('.order-item').remove();
+                        } else {
+                            console.error('Error cancelling order. Server response:', response);
+                        }
+                    },
+                    error: function (error) {
+                        // Handle error, show a message or log the error
+                        console.error('Error cancelling order:', error);
+                    }
+                });
+            }
+        });
+    });
+
+        </script>
+        
+
+
+   
+
+</html>

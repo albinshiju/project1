@@ -1,0 +1,66 @@
+<!--  -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verification Mail</title>
+</head>
+
+<body>
+    <h2>OTP Verification</h2>
+    <p>Please enter the OTP sent to your mail</p>
+
+
+    <% if (typeof message !=='undefined' ) { %>
+        <p style="color: green;">
+            <%= message %>
+        </p>
+        <% } %>
+
+            <div>
+                <form action="/verifyOTP" method="post">
+                    <input type="email" name="email" placeholder="Enter email" required>
+                    <br><br>
+                    <label for="otp">Enter OTP:</label>
+                    <input type="text" name="otp" required>
+                    <button type="submit" id="sendbutton">Submit OTP</button>
+
+
+                </form>
+                <div id="otpButtonContainer"
+                    style="display: flex; flex-direction: column; align-items: center; justify-content: center; ">
+                    <button id="resendbutton" style="background-color: rgb(183, 123, 236); display: none; "><a
+                            href="/verification">Resend OTP</a></button>
+                </div>
+                <p id="countdown">Time remaining: <span id="timer">25</span> seconds</p>
+            </div>
+</body>
+<script>
+    let seconds = 35;
+    const countdown = document.getElementById('timer');
+    const button = document.getElementById('resendbutton');
+    const button1 = document.getElementById('sendbutton');
+    const updateTimer = () => {
+        countdown.textContent = seconds;
+        seconds--;
+        if (seconds < 0) {
+            clearInterval(interval);
+            countdown.textContent = 'Time expired';
+
+            button.style.display = 'block';
+            button1.style.display = 'none';
+            document.getElementById(otpObject.id).textContent = otpObject.otp;
+            otpObject.otp = 0
+
+        }
+    };
+
+    const interval = setInterval(updateTimer, 1000);
+
+    
+
+</script>
+
+</html>

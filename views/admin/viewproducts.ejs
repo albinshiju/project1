@@ -1,0 +1,189 @@
+<%- include('sidebar.ejs') %>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.9.0/dist/sweetalert2.min.css"> -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+  <!-- Add the following style block below the DataTables CSS link -->
+<style>
+  /* Custom DataTable Styles */
+  #productsTable_wrapper {
+    margin-top: 20px; /* Adjust as needed */
+    border: 1px solid #ddd; /* Add a subtle border to the DataTable wrapper */
+    border-radius: 5px; /* Optional: Add rounded corners */
+    padding: 20px; /* Optional: Add some padding for spacing */
+  }
+
+  #productsTable_filter {
+    float: right; /* Align the search bar to the right */
+    margin-bottom: 10px; /* Adjust as needed */
+  }
+
+  #productsTable_filter label {
+    margin-right: 10px; /* Add some space between the label and the input */
+    font-weight: bold; /* Make the label bold */
+  }
+
+  #productsTable_filter input {
+    padding: 8px; /* Adjust as needed */
+    border: 1px solid #ccc; /* Add a border to the search input */
+    border-radius: 5px; /* Optional: Add rounded corners */
+  }
+
+  #productsTable_paginate {
+    float: right; /* Align the pagination to the right */
+    margin-top: 10px; /* Adjust as needed */
+  }
+
+  #productsTable_paginate .paginate_button {
+    margin-right: 5px; /* Add space between pagination buttons */
+  }
+
+  #productsTable_info {
+    margin-top: 10px; /* Adjust as needed */
+  }
+</style>
+
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+</head>
+
+<body>
+  <section class="is-title-bar">
+    <div class="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
+      <ul>
+        <li>Admin</li>
+        <li>view products</li>
+      </ul>
+     
+    </div>
+  </section>
+
+  <br><br>
+  <div class="container">
+    <table id="productsTable" class="display">
+      <thead>
+        <tr>
+          <th>Model</th>
+          <th>Price</th>
+          <th>Description</th>
+          <th>Product Status</th>
+          <th>Image</th>
+          <th>Action</th>
+          <th>stock</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (product.length> 0) { %>
+          <% for (let i=0; i < product.length; i++) { %>
+            <tr>
+              <td>
+                <%= product[i].name %>
+              </td>
+              <td>₹<%= product[i].price %>
+              </td>
+              <td>
+                <%= product[i].description %>
+              </td>
+              <td>
+                <% if (product[i].is_deleted===1) { %>
+                  removed
+                  <% } else if (product[i].is_deleted===0) { %>
+                    Active
+                    <% } %>
+
+              </td>
+              <td>
+                <img src="/productImages/<%= product[i].images[0] %>" width="100" height="100"
+                  alt="<%= product[i].image %>">
+              </td>
+              <td>
+                <a class="btn btn-primary" onclick="confirmEdit('<%= product[i]._id %>')">
+                  <i class="fas fa-edit"></i> Edit
+                </a>
+                <br>
+                <!-- <a onclick="confirmEdit('<%= product[i]._id %>')">
+                  <i class="fas fa-edit"></i> Edit
+                </a> -->
+                <a class="btn btn-success" onclick="confirmRemove('<%= product[i]._id %>')">
+                  <i class="fas fa-trash-alt"></i>
+                  <% if (product[i].is_deleted===1) { %>
+                    Restore
+                    <% } else if (product[i].is_deleted===0) { %>
+                      Remove
+                      <% } %>
+                </a>
+                <br>
+               
+              </td>
+              <td>
+                <%= product[i].stock %>
+              </td>
+            </tr>
+           
+            <% } %>
+              <% } else { %>
+                <tr>
+                  <td colspan="5">Products not found</td>
+                </tr>
+                <% } %>
+      </tbody>
+    </table>
+  </div>
+
+  <br>
+  <a href="/admin/home" class="btn btn-primary">
+    <i class="fas fa-home"></i> Go to Home
+  </a>
+  <script>
+    $(document).ready(function () {
+     $('#productsTable').DataTable();
+   });
+ </script>
+ 
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.9.0/dist/sweetalert2.all.min.js"></script>
+  <script>
+    function confirmEdit(productId) {
+      Swal.fire({
+
+        title: 'Edit Product',
+        text: 'Are you sure you want to edit this product?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'No',
+      }).then((result) => {
+        if (result.isConfirmed) {
+
+          console.log("widnow.loc.href");
+          console.log(productId);
+          window.location.href = `/admin/editproducts?productId=${productId}`;
+
+        }
+      });
+    }
+   
+    function confirmRemove(productId) {
+      Swal.fire({
+
+        title: 'Edit Product',
+        text: 'Are you sure you want to edit this product?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'No',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = '/admin/removeproduct/' + productId;
+        }
+      });
+    }
+
+  </script>
+</body>
+
+</html>

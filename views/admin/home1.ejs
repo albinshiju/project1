@@ -1,0 +1,113 @@
+<%- include('sidebar.ejs') %>
+<div class="user-details-container">
+  <h3>Welcome, <%= admin.name %></h3>
+  <a class="dashboard-button" href="/admin/dashboard">Dashboard</a>
+  <a class="add-products-button" href="/admin/addproducts">Add Products</a>
+  <a class="view-products-button" href="/admin/viewproducts">View Products</a>
+  <a class="category-button" href="/admin/category">Categories</a>
+  <a class="orders-button" href="/admin/orders">view orders</a>
+  <a class="Coupon" href="/admin/couponmanagement">Coupon Management</a>
+  <a class="sales" href="/admin/salesreport">Sales Report</a>
+  <a class="graph" href="/admin/graph">all graph</a>
+
+
+  <div class="user-details">
+    <div class="user-image">
+      <img src="userImages/<%= admin.image %>" alt="<%= admin.image %>">
+    </div>
+    <div class="user-info">
+      <div class="user-info-row">
+        <span class="info-label">Email:</span>
+        <span><%= admin.email %></span>
+      </div>
+      <div class="user-info-row">
+        <span class="info-label">Mobile:</span>
+        <span><%= admin.mobile %></span>
+      </div>
+      <div class="user-info-row">
+        <span class="info-label">Verified:</span>
+        <span>Yes</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="user-actions">
+    <span class="username"><%= admin.name %></span>
+    <a class="logout-button" href="/logout">Loddgout</a>
+  </div>
+</div>
+
+<style>
+    .user-details-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+  background-color: #f4f4f4;
+}
+
+h3 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+/* Style the buttons */
+a.dashboard-button, a.add-products-button, a.view-products-button, a.category-button , a.orders-button ,a.Coupon, a.sales ,a.graph{
+  display: inline-block;
+  padding: 10px 20px;
+  margin: 5px;
+  background-color: #007BFF;
+  color: #fff;
+  text-decoration: none;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Style user details section */
+.user-details {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.user-image img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-right: 20px;
+}
+
+.user-info {
+  text-align: left;
+}
+
+.info-label {
+  font-weight: bold;
+}
+
+.user-info-row {
+  margin: 10px 0;
+}
+
+/* Style user actions section */
+.user-actions {
+  text-align: right;
+}
+
+.username {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.logout-button {
+  background-color: #dc3545;
+  color: #fff;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+}
+</style>
+<%- include('../layouts/footer.ejs') %>

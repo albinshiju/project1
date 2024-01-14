@@ -1,0 +1,74 @@
+<%- include('adminheader.ejs') %>
+
+<%- include('../layouts/header.ejs') %>
+
+<div class="container mt-4">
+    <h2 class="mb-4">Add Coupon</h2>
+    <% if (typeof message !== 'undefined') { %>
+        <h3><%= message %></h3>
+    <% } %>
+    <form action="/admin/addcoupon" method="POST">
+
+        <!-- Coupon Code -->
+        <div class="form-group row">
+            <label for="couponCode" class="col-sm-3 col-form-label">Coupon Code:</label>
+            <div class="col-sm-6">
+                <input type="text" class="form-control" id="couponCode" name="couponCode" required>
+            </div>
+            <div class="col-sm-3">
+                <button type="button" class="btn btn-secondary" onclick="generateCouponCode()">Generate Code</button>
+            </div>
+        </div>
+
+        <!-- Active Checkbox -->
+        <div class="form-group row">
+            <label for="active" class="col-sm-3 col-form-label">Active:</label>
+            <div class="col-sm-9">
+                <input type="checkbox" class="form-check-input" id="active" name="active" checked>
+            </div>
+        </div>
+
+        <!-- Discount Percentage -->
+        <div class="form-group row">
+            <label for="discountPercentage" class="col-sm-3 col-form-label">Discount Percentage:</label>
+            <div class="col-sm-9">
+                <input type="number" class="form-control" id="discountPercentage" name="discountPercentage" required>
+            </div>
+        </div>
+
+        <!-- Start Date -->
+        <div class="form-group row">
+            <label for="startDate" class="col-sm-3 col-form-label">Start Date:</label>
+            <div class="col-sm-9">
+                <input type="date" class="form-control" id="startDate" name="startDate" required>
+            </div>
+        </div>
+
+        <!-- Expiration Date -->
+        <div class="form-group row">
+            <label for="expirationDate" class="col-sm-3 col-form-label">Expiration Date:</label>
+            <div class="col-sm-9">
+                <input type="date" class="form-control" id="expirationDate" name="expirationDate" required>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="form-group row">
+            <div class="col-sm-9 offset-sm-3">
+                <button type="submit" class="btn btn-primary">Add Coupon</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    function generateCouponCode() {
+        // Generate a random string for the coupon code
+        const randomCode = Math.random().toString(36).substring(2, 10);
+        
+        // Set the generated code as the value of the couponCode input
+        document.getElementById('couponCode').value = randomCode;
+    }
+</script>
+
+<%- include('../layouts/footer.ejs') %>

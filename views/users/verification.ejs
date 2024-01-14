@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification</title>
+
+    <!-- Add Bootstrap 4 CSS link -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <h2 class="mt-5">OTP Verification</h2>
+        <p>Please enter the OTP sent to your email</p>
+
+        <!-- Replace server-side script tags with Bootstrap alert component -->
+        <div class="mt-4">
+            <div id="message" class="alert alert-success" style="display: none;"></div>
+        </div>
+
+        <div class="mt-4">
+            <form action="" method="post">
+                <div class="form-group">
+                    <input type="email" name="email" class="form-control" placeholder="Enter email" required>
+                </div>
+                <div class="form-group mt-3">
+                    <button type="submit" id="send-button" class="btn btn-primary">Send OTP</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Bootstrap 4 JavaScript and jQuery (optional) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

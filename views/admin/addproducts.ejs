@@ -1,0 +1,185 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.9.0/dist/sweetalert2.min.css">
+  <style>
+    .error {
+            font-size: 14px;
+            color: #dc3545;
+            font-weight: 600;
+            margin-top: 5px;
+            display: none;
+        }
+</style>
+
+</head>
+
+<body>
+<%- include('sidebar.ejs') %>
+<section class="is-title-bar">
+    <div class="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
+      <ul>
+        <li>Admin</li>
+        <li>Add New Products</li>
+      </ul>
+     
+    </div>
+  </section>
+
+    <div class="container mt-5">
+    
+        <form action="" method="post" enctype="multipart/form-data" onsubmit="return productValidation()">
+            <div class="form-group">
+                <label for="">Product Name</label>
+
+                <input id="productname" type="text" name="name" class="form-control" placeholder="Enter Name" required>
+                <span class="error">please enter a valid stock value</span>
+
+            </div>
+            <br>
+    
+            <div class="form-group">
+                <label for="">Category Name</label>
+
+                <select name="category" class="form-control" id="category" required>
+                    
+                    <option value="">Choose The Category</option>
+                    <% categories.forEach(function(category) { %>
+                        <option value="<%= category._id %>">
+                            <%= category.categoryName %>
+                        </option>
+                        <% }); %>
+                </select>
+                <div class="text-danger mt-2" id="categoryErr"></div>
+            </div>
+            
+            <br>
+    
+            <div class="form-group">
+                <label for="">Description</label>
+
+                <input type="text" name="description" class="form-control" placeholder="Enter Description" required>
+            </div>
+            <br>
+    
+            <div class="form-group">
+                <label for="">Price</label>
+
+                <input id="price" type="text" name="price" class="form-control" placeholder="Enter Price" required>
+                <span  class="error">please enter a valid price value</span>
+
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="">Stock</label>
+
+                <input id="stock" type="text" name="stock" class="form-control" placeholder="Enter Stock" required>
+                <span  class="error">please enter a valid stock value</span>
+
+            </div>
+            <br>
+    
+            <div class="form-group">
+                <label for="">Add Images</label>
+
+                <div id="imagePreview" class="mt-3" style="width: 100px; height: 100px; display: flex;"></div>
+
+
+                <input type="file" class="form-control-file" id="images" name="images" multiple required>
+                <br>
+            </div>
+            <br>
+
+    
+            <button type="submit" class="btn btn-primary">Add Product</button>
+        </form>
+    
+        
+    
+                <a href="/admin/home" class="btn btn-secondary mt-3">Go Back</a>
+    </div>
+    
+    
+</body>
+<script>
+    function productValidation() {
+    var productNameInput = document.getElementById('productname');
+    var stockInput = document.getElementById('stock');
+    var priceInput = document.getElementById('price')
+    var stockValue = parseInt(stockInput.value);
+    var priceValue = parseInt(priceInput.value)
+    // Use nextElementSibling for stock input error span
+    
+    var stockErrorSpan = stockInput.nextElementSibling;
+    var priceErrorSpan = priceInput.nextElementSibling;
+
+
+   
+
+    if (isNaN(stockValue) || stockValue < 0) {
+        stockErrorSpan.textContent = 'Please enter a valid stock value';
+        stockErrorSpan.style.display = 'block';
+        return false;
+    } else {
+        stockErrorSpan.style.display = 'none';
+    }
+    if (isNaN(priceValue) || priceValue < 0) {
+        priceErrorSpan.textContent = 'Please enter a valid price value';
+        priceErrorSpan.style.display = 'block';
+        return false;
+    } else {
+        priceErrorSpan.style.display = 'none';
+    }
+    // Add other validations if needed
+
+    // If all validations pass, return true to allow form submission
+    return true;
+}
+
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get the file input element
+        const fileInput = document.getElementById('images');
+    
+        // Add an event listener to the file input for the 'change' event
+        fileInput.addEventListener('change', function() {
+            // Get the container where you want to display the images
+            const imagePreview = document.getElementById('imagePreview');
+    
+            // Clear the previous content
+            imagePreview.innerHTML = '';
+    
+            // Loop through the selected files and create image elements
+            for (const file of fileInput.files) {
+                const image = document.createElement('img');
+                image.src = URL.createObjectURL(file);
+                image.className = 'img-thumbnail';
+                imagePreview.appendChild(image);
+            }
+        });
+        const productNameInput = document.getElementById('productname');
+    
+    // Add an event listener to the input for the 'input' event
+    productNameInput.addEventListener('input', function() {
+        // Get the entered value
+        const productNameValue = productNameInput.value;
+
+        // Log the value to the console
+        console.log('Product Name:', productNameValue);
+    });
+    });
+
+    
+
+
+    </script>
+
+    
+</html>

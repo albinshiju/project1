@@ -1,0 +1,181 @@
+<%- include('../layouts/header.ejs') %>
+<%- include('./userheader.ejs') %>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.15.2/css/all.css" integrity="your-integrity-code" crossorigin="anonymous">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+
+<style>
+     body {
+        font-family: 'Open Sans', sans-serif;
+        background-color: #f8f9fa;
+        color: #212529;
+    }
+
+    .cart-wrap {
+        padding: 40px 0;
+    }
+
+    .main-heading {
+        font-size: 28px;
+        margin-bottom: 20px;
+        font-weight: 700;
+        color: #343a40;
+    }
+
+    .table-wishlist table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #ffffff;
+        border: 1px solid #e5e5e5;
+    }
+
+    .table-wishlist thead {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+        text-align: left;
+    }
+
+    .table-wishlist th {
+        padding: 15px;
+        font-size: 16px;
+        font-weight: 700;
+        color: #343a40;
+    }
+
+    .table-wishlist tr {
+        border-bottom: 1px solid #e5e5e5;
+    }
+
+    .table-wishlist tr:last-child {
+        border-bottom: none;
+    }
+
+    .table-wishlist td {
+        padding: 20px;
+        vertical-align: middle;
+        font-size: 14px;
+    }
+
+    /* .table-wishlist td .img-product img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    } */
+
+    .name-product {
+        font-size: 16px;
+        color: #343a40;
+        margin-top: 5px;
+    }
+
+    .price {
+        font-weight: 600;
+        color: #8660e9;
+    }
+
+    .round-black-btn {
+        border-radius: 25px;
+        background: #212529;
+        color: #fff;
+        padding: 8px 20px;
+        display: inline-block;
+        border: 2px solid #212529;
+        transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .round-black-btn:hover,
+    .round-black-btn:focus {
+        background: #fff;
+        color: #212529;
+        text-decoration: none;
+    }
+
+    .trash-icon {
+        font-size: 20px;
+        color: #dc3545;
+    }
+
+    .trash-icon:hover {
+        color: #bd2130;
+    }
+</style>
+    </head>
+    <body>
+
+        <div class="cart-wrap">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="main-heading mb-10">My wishlist</div>
+                        <div class="table-wishlist">
+                            <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th width="45%">Product Name</th>
+                                        <th width="15%">Unit Price</th>
+                                        <!-- <th width="15%">Stock Status</th> -->
+                                        <th width="15%"></th>
+                                        <th width="10%"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% wishlist.forEach(element => {%>
+                                        <tr>
+                                            <td width="45%">
+                                                <div class="display-flex align-center">
+                                                    <div class="img-product">
+                                                        <img src="/productImages/<%= element.image%>" class="" style="height: 100px;width: 100px;">
+                                                    </div>
+                                                    <div class="name-product">
+                                                        <%= element.productname %>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td width="15%" class="price">$<%= element.price %></td>
+                                            
+
+                                            <!-- <td width="15%"><span class="in-stock-box">In Stock</span></td> -->
+                                            <td width="15%"><button class="round-black-btn small-btn" onclick="productAdd()">Add to Cart</button></td>
+                                            <td width="10%" class="text-center"><a href="/removeproductwishlist/<%= element._id  %>" class="trash-icon"><i class="far fa-trash-alt"></i></a></td>
+                                        </tr>
+                                        <%}); %>
+                                    
+                                   
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <script>
+                              function productAdd(e){
+      Swal.fire({
+  position: "center",
+  icon: "success",
+  title: "Product Added to cart",
+  showConfirmButton: false,
+  timer: 1500
+});
+    }
+    </script>
+    </body>
+    <%- include('userfooter.ejs') %>
+<%- include('../layouts/footer.ejs') %>
+    </html>
+	

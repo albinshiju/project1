@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Banner Upload Page</title>
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+        }
+
+        .custom-file-input:lang(en)~.custom-file-label:after {
+            content: "Browse";
+        }
+
+        .custom-file {
+            margin-bottom: 20px;
+        }
+
+        #preview-banner {
+            max-width: 100%;
+            height: auto;
+            display: none;
+            margin-top: 20px;
+        }
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #dee2e6;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .banner-img {
+            max-width: 100px;
+            max-height: 80px;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <%- include('sidebar.ejs')  %>
+    <section class="is-title-bar">
+        <div class="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
+          <ul>
+            <li>Admin</li>
+            <li>Admin Banner Upload</li>
+          </ul>
+         
+        </div>
+      </section>
+    <div class="container">
+      
+
+        <form action="/admin/uploadbanner" method="post" enctype="multipart/form-data">
+            <div class="custom-file">
+                <input type="file" class="custom-file-input" id="bannerUpload" name="image" accept="image/*">
+                <label class="custom-file-label" for="bannerUpload">Choose banner image</label>
+            </div>
+
+            <div id="preview-banner">
+                <img id="bannerPreview" class="img-fluid" alt="Banner Preview">
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-3">Upload Banner</button>
+        </form>
+    </div>
+    <div class="container">
+        <h2 class="mt-3 mb-4">View Uploaded Banners</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Banner</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% banner.forEach(element =>{%>
+                <tr>
+                    <td>
+                        <img src="/bannerImages/<%= element.image %>" alt="Banner 1" class="banner-img">
+                    </td>
+                    <td>
+                        <button id="delete-banner" value="<%= element._id %>" class="btn btn-primary" onclick="">remove</button>
+                    </td>
+                </tr>
+                <% })%>
+
+            </tbody>
+        </table>
+    </div>
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Custom JS for image preview -->
+    <script>
+          const deleteButtons = document.querySelectorAll('#delete-banner');
+      
+      deleteButtons.forEach(button => {
+          
+          console.log("delete banner clicked");
+          console.log(button.value);
+        button.addEventListener('click', () => {
+          const bannerId = button.value;
+    
+          fetch(`/admin/deletebanner/${bannerId}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ bannerId })
+          })
+          .then(response => {
+            if (response.ok) {
+              button.closest('tr').remove(); // Remove the banner row from the table
+            } else {
+              console.error('Error deleting banner:', response.statusText);
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+          });
+        });
+      });
+        document.getElementById('bannerUpload').addEventListener('change', function (e) {
+            var preview = document.getElementById('bannerPreview');
+            var previewContainer = document.getElementById('preview-banner');
+            var file = e.target.files[0];
+
+            if (file) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                };
+
+                reader.readAsDataURL(file);
+            }
+        });
+        const formData = new FormData(document.getElementById('bannerUploadForm'));
+            fetch('/admin/uploadbanner', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Update the table with the latest uploaded image
+                // (Replace this placeholder with your specific table update logic)
+                updateTableWithLatestImage(data);
+            })
+            .catch(error => {
+                console.error('Error uploading banner:', error);
+                // Handle errors here, e.g., display an error message to the user
+            });
+            
+    </script>
+</body>
+</html>

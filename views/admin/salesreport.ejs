@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Report</title>
+
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+        crossorigin="anonymous">
+</head>
+<%- include('sidebar.ejs')  %>
+<body>
+    <section class="is-title-bar">
+        <div class="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
+            <ul>
+                <li>Admin</li>
+                <li>Sales Report</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Date Range Selection -->
+    <div class="form-group row">
+        <label for="startDate" class="col-sm-3 col-form-label">Start Date:</label>
+        <div class="col-sm-9">
+            <input type="date" class="form-control" id="startDate" name="startDate" required>
+        </div>
+    </div>
+
+    <!-- Expiration Date Selection -->
+    <div class="form-group row">
+        <label for="expirationDate" class="col-sm-3 col-form-label">Expiration Date:</label>
+        <div class="col-sm-9">
+            <input type="date" class="form-control" id="expirationDate" name="expirationDate" required>
+        </div>
+    </div>
+
+    <!-- Generate Sales Report Button -->
+    <div class="form-group row">
+        <div class="col-sm-9 offset-sm-3">
+            <button id="generateSales" type="button" class="btn btn-primary">Generate Sales Report</button>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Print PDF Button -->
+    <div style="display: flex; flex-direction: row-reverse;">
+        <div class="btn-group contact mb-3 gap-2">
+            <div>
+                <button class="btn btn-primary" onclick="printPDF()" style="background-color: rgb(194, 147, 147);">Print
+                    PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sales Data Table -->
+    <div id="salesData">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Orde dr ID</th>
+                    <th>Product Name</th>
+                    <th>Product Price</th>
+                    <th>Quantity</th>
+                    <th>Cart Total</th>
+                    <th>Payment Method</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody id="salesTableBody"></tbody>
+        </table>
+    </div>
+
+    <!-- Include Bootstrap and JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
+        integrity="sha384-pzjw8IT+KxEaG8I94AA0zIbjd+pPn+wc9gjI1lsg/5z5ZB+dOWFqX1a1kAdWEEDT"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
+    <!-- Include libraries for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
+        integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+        document.getElementById('generateSales').addEventListener("click", function () {
+            var startDate = document.getElementById('startDate').value;
+            var expirationDate = document.getElementById('expirationDate').value;
+            var requestData = {
+                startDate: startDate,
+                expirationDate: expirationDate
+            };
+
+            fetch('/admin/salesreport', {
+                method: 'post',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(requestData)
+            })
+                .then(res => res.json())
+                .then(data => {
+                    var salesTableBody = document.getElementById('salesTableBody');
+                    salesTableBody.innerHTML = ""; // Clear previous content
+                    data.alldata.forEach(item => {
+                        salesTableBody.innerHTML += `
+                            <tr>
+                                <td>${item.orderid}</td>
+                                <td>${item.productName}</td>
+                                <td>${item.productPrice}₹</td>
+                                <td>${item.quantity}</td>
+                                <td>${item.totalprice}₹</td>
+                                <td>${item.paymentMethod}</td>
+                                <td>${item.date}</td>
+                            </tr>
+                        `;
+                    });
+                })
+                .catch(error => {
+                    console.error("Error fetching sales data:", error);
+                });
+        });
+
+        function printPDF() {
+            const pdfContent = document.getElementById("salesData");
+            const pdfOptions = {
+                margin: 1,
+                filename: 'sales_report.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+            };
+
+            html2pdf().set(pdfOptions).from(pdfContent).save();
+        }
+    </script>
+</body>
+
+</html>

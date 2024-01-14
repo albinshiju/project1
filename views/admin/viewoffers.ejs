@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sample Table</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+    td a {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: #4CAF50;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+td a:hover {
+  background-color: #45a049;
+}
+
+  </style>
+</head>
+
+<body>
+    <br>
+        <table>
+            <thead>
+              <tr>
+                <th>Category Name</th>
+                <th>Percentage</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+                <% offers.forEach(each_offer =>{%>
+              <tr>
+                
+                <td><%= each_offer.category.categoryName %></td>
+                <td><%= each_offer.percentage %>%</td>
+                <td><a href="" onclick="confirmRemove1(`<%= each_offer.category._id %>`)">Remove</a></td>
+              </tr>
+              <%}) %>
+
+            </tbody>
+          </table>
+   
+    
+          <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    function confirmRemove1(id) {
+        event.preventDefault();
+
+        Swal.fire({
+          title: 'Confirmation',
+          text: `Do you want to remove the category ?`,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, remove it!',
+          cancelButtonText: 'No, cancel!',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            fetch('/admin/removeoffer',{
+                method:'DELETE',
+                headers:{
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id:id}),
+            })
+            .then(Response => Response.json())
+            .then(data=>{
+                Swal.fire('Removed!', `The category  has been removed.`, 'success');
+            })
+            .catch(error => {
+              Swal.fire('Error', 'An error occurred while trying to remove the category.', 'error');
+            });
+          } else {
+            Swal.fire('Cancelled', 'The removal process was cancelled.', 'info');
+          }
+        });
+      }
+</script>
+</body>
+</html>

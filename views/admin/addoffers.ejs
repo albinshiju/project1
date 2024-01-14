@@ -1,0 +1,129 @@
+<%- include('sidebar.ejs') %>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Offer</title>
+    <style>
+      .error {
+            font-size: 14px;
+            color: #dc3545;
+            font-weight: 600;
+            margin-top: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <section class="is-title-bar">
+        <div class="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
+          <ul>
+            <li>Admin</li>
+            <li>Offer Management</li>
+            
+          </ul>
+         
+        </div>
+
+        
+      </section>
+
+    <form action="/admin/offers" method="post">
+
+
+        <label for="category">Category:</label>
+        <select id="category" name="category" required>
+            <% categories.forEach(category => { %>
+                <option value="<%= category._id %>"><%= category.categoryName %></option>
+            <% }); %>
+        </select>
+        <label for="">Percentage</label>
+        <input type="text" name="percentage">
+
+        <!-- <label for="activeCheckbox">Active:</label>
+    <input type="checkbox" id="activeCheckbox" name="active"> -->
+
+    <button type="button" class="btn btn-info" onclick="addoffer()">Add Offer</button>
+
+    </form>
+
+    <span class="error">Offer Already Exist!</span>
+
+    <%- include('viewoffers') %>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+      function getCategoryID() {
+            var categorySelect = document.getElementById('category');
+            var selectedCategoryID = categorySelect.options[categorySelect.selectedIndex].value;
+            return selectedCategoryID;
+        }
+        function percentage() {
+    var percentageInput = document.getElementsByName('percentage')[0];
+    var percentageValue = percentageInput.value;
+    console.log('Percentage Value:', percentageValue);
+    return percentageValue;
+}
+
+
+function addoffer() {
+  var percentageValue = percentage();
+
+// Check if percentage is more than 80
+if (percentageValue > 80) {
+  var errorMessage = document.createElement('p');
+  errorMessage.textContent = 'Percentage cannot be more than 80';
+  errorMessage.style.color = '#dc3545'; // Setting red color
+  errorMessage.style.fontWeight = '600'; // Setting bold font
+  document.body.appendChild(errorMessage);
+  return; // Stop further execution
+}
+  var categoryID = getCategoryID();
+  console.log('Selected Category ID:', categoryID);
+  var percentageValue = percentage();
+
+  event.preventDefault();
+
+  Swal.fire({
+    title: 'Confirmation',
+    text: `Do you want to add this offer ?`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, add it!',
+    cancelButtonText: 'No, cancel!',
+  }).then((result) => {
+    if (result.isConfirmed) {
+      fetch('/admin/offers', {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ category: categoryID, percentage: percentageValue }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.exist === 0) {
+            console.log("false");
+            Swal.fire('Added!', `The offer has been added.`, 'success');
+          } else if (data.exist === 1) {
+            console.log("true");
+            Swal.fire('Cancelled!', `The offer already exists.`, 'error');
+          }
+        })
+        .catch((error) => {
+          Swal.fire('Error', 'An error occurred while trying to add the offer.', 'error');
+        });
+    } else {
+      Swal.fire('Cancelled', 'Thank you for cancel', 'info');
+    }
+  });
+}
+    </script>
+    
+    
+</body>
+</html>

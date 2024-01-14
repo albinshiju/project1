@@ -1,0 +1,33 @@
+<%- include('../layouts/header.ejs') %>
+
+<div class="container mt-4">
+    <h1>Edit Product</h1>
+    <form action="/admin/edit-product?id=<%= product._id %>" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" name="name" placeholder="Enter name" value="<%= product.name %>" required>
+        </div>
+        <div class="form-group">
+            <label for="price">Price</label>
+            <input type="text" class="form-control" name="price" placeholder="Enter price" value="<%= product.price %>" required>
+        </div>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea class="form-control" name="description" placeholder="Enter description" required><%= product.description %></textarea>
+        </div>
+        <div class="image-container">
+                    <img src="/productImages/<%= product.image %>" name="image" width="50" height="50" id="imgView">
+        </div>
+        <input type="file" name="image"  onchange="viewImage(event)">
+        <input type="hidden" name="old_image" class="form-control" >
+        <button type="submit" class="btn btn-primary">Change Value</button>
+    </form>
+    <a href="/admin" class="btn btn-secondary mt-2">Go to Dashboard</a>
+</div>
+<script>
+    function viewImage(event){
+        console.log("fdafdafds");
+        document.getElementById('imgView').src=URL.createObjectURL(event.target.files[0])
+    }
+</script>
+<%- include('../layouts/footer.ejs') %>

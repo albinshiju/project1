@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* Custom Styles */
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 28px;
+        }
+    
+        .navbar-nav .nav-link {
+            color: #333;
+            font-weight: bold;
+        }
+    
+        .header__nav__option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+    
+        .logout-btn {
+            text-decoration: none;
+            color: #333;
+            background-color: #f8f8f8;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header class="header bg-light">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-light">
+                <a class="navbar-brand" href="/home" style="text-decoration: none; color: blue; font-weight: bold; font-size: 28px;">speedcart.com</a>
+    
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+    
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="/home">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/allproducts">Products</a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a class="nav-link" href="/userprofile">My Profile</a>
+                        </li>
+                    </ul>
+    
+                    <div class="header__nav__option">
+                        <a href="/wishlist"><img src="/assets1/img/icon/heart.png" alt=""></a>
+                        <a href="/cart"><img src="/assets1/img/icon/cart.png" alt=""> <span>0</span></a>
+                        <a href="/logout" style="text-decoration: none; color: #333; background-color: #f8f8f8; padding: 10px 15px; border-radius: 5px; display: inline-block; font-weight: bold;">Log Out</a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+</body>
+</html>
+
+

@@ -1,0 +1,260 @@
+<%- include('../layouts/header.ejs') %>
+    <%- include('./userheader.ejs') %>
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <!-- Include Font Awesome library -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <!-- Include Font Awesome library -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11"> <!-- Include SweetAlert2 library -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+        <style>
+            .text-center {
+                text-align: center;
+            }
+
+            .mb-3 {
+                margin-bottom: 1rem;
+                /* You can adjust the value as needed */
+            }
+
+            .mt-3 {
+                margin-top: 1rem;
+                /* You can adjust the value as needed */
+            }
+
+            form {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            input[type="text"] {
+                padding: 0.5rem;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+            }
+
+            input[type="submit"] {
+                padding: 0.5rem 1rem;
+                background-color: #007bff;
+                /* Blue color */
+                color: #fff;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                /* Center the icon and text */
+            }
+
+            input[type="submit"] i {
+                margin-right: 0.5rem;
+                /* Adjust the spacing between icon and text */
+            }
+
+            input[type="submit"]:hover {
+                background-color: #0056b3;
+                /* Darker blue on hover */
+            }
+
+            .container-fluid {
+                padding: 20px;
+                /* Add some padding for better spacing */
+            }
+
+            .mb-3 {
+                margin-bottom: 1rem;
+            }
+
+            .mt-3 {
+                margin-top: 1rem;
+            }
+
+            .col {
+                text-align: right;
+                /* Align the button to the right within the column */
+            }
+
+            button {
+                padding: 10px 20px;
+                /* Adjust the padding as needed */
+                background-color: #007bff;
+                /* Blue color */
+                color: #fff;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+
+            button:hover {
+                background-color: #0056b3;
+                /* Darker blue on hover */
+            }
+        </style>
+        <form action="/allproducts" method="get" class="text-center mb-3 mt-3">
+            <div style="position: relative;">
+                <input type="text" placeholder="Search products here" name="search"
+                    style="padding: 10px; border: 2px solid #ccc; border-radius: 15px; width: 250px;">
+                <input type="image" src="/assets1/img/icon/search.png" alt="Search"
+                    style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px;">
+            </div>
+            <button type="submit" class="btn btn-link"
+                style="padding: 0; background: none; border: none; margin: 0; cursor: pointer;">
+                <i class="fa fa-refresh ml-2" aria-hidden="true"></i>
+            </button>
+
+        </form>
+        <div class="container-fluid">
+
+
+
+
+
+            <div class="row">
+                <div class="col-lg-3 col-md-4 col-sm-12">
+
+                    <div>
+                        <h6 class="p-1 border-bottom">Filter by</h6>
+                        <p class="mb-2"></p>
+                        <!-- Update your HTML -->
+                        <div class="list-group">
+                            <li class="list-group-item list-group-item-action mb-2 rounded">
+                                <a href="/allproducts?category=6569645864c72c65377cbd6a">Mobile</a>
+                            </li>
+                            <li class="list-group-item list-group-item-action mb-2 rounded">
+                                <a href="/allproducts?category=656ccfdd2aa6379794e2b966">CAMERA</a>
+                            </li>
+                            <li class="list-group-item list-group-item-action mb-2 rounded">
+                                <a href="/allproducts?category=656ccfe72aa6379794e2b96a">Laptops</a>
+                            </li>
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="col-lg-9 col-md-8 col-sm-12 product__filter">
+
+                    <% if (products.length> 0) { %>
+                        <div class="row">
+                            <% products.forEach(product=> { %>
+                                <div class="col-lg-4 col-md-4 col-sm-4 mix new-arrivals">
+
+                                    <div class="product__item">
+                                        <div class="product__item__pic set-bg" data-setbg="">
+                                            <span class="label">New</span>
+                                            <ul class="">
+                                                <li><a href="/prdetails?id=<%= product._id %>"><img
+                                                            src="/productImages/<%= product.images[0] %>" alt=""></a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="product__item__text">
+                                            <h6>
+                                                <%= product.name %>
+                                            </h6>
+                                            <% if (product.stock> 0) { %>
+                                                <a href="/cart/addtocart/<%=product._id %>" onclick="productAdd()"
+                                                    class="add-cart" style="color: #3685da;">+ Add To Cart</a>
+                                                <% } else { %>
+                                                    <a class="add-cart" style="color:rgb(199, 12, 12)">Out Of Stock</a>
+                                                    <% } %>
+                                                        <!-- <div class="rating">
+                                            <i class="fa fa-star-o"></i>
+                                            <i class="fa fa-star-o"></i>
+                                            <i class="fa fa-star-o"></i>
+                                            <i class="fa fa-star-o"></i>
+                                            <i class="fa fa-star-o"></i>
+                                        </div> -->
+                                                        <!-- 🙌code for category offer -->
+                                                        <% const productOffer=offers.find(offer=>
+                                                            offer.category.equals(product.category)) %>
+                                                            <span class="badge badge-info"> discount:
+                                                                ₹<%= productOffer ? `${product.price -
+                                                                    (productOffer.percentage * product.price) / 100}` :
+                                                                    `No Offer` %>
+                                                            </span>
+                                                            <h5>₹<%= product.price %>
+                                                            </h5>
+
+                                                            <button class="like-btn"
+                                                                onclick="likeProduct('<%= product._id %>')"> <i
+                                                                    class="fa fa-heart-o"></i></button>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <% }) %>
+
+                        </div>
+                        <% } else { %>
+                            <p>Products not found</p>
+                            <% } %>
+                </div>
+
+            </div>
+        </div>
+
+
+
+
+        <br>
+        <% for(let j=1; j <=totalpages; j++) { %>
+            <a href="?page=<%= j %>">
+                <%= j %>
+            </a>
+            <% } %>
+                <br>
+
+                <%- include('userfooter.ejs') %>
+
+
+                    <%- include('../layouts/footer.ejs') %>
+
+                        <script>
+                            function productAdd(e) {
+                                Swal.fire({
+                                    position: "center",
+                                    icon: "success",
+                                    title: "Product Added to cart",
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                            }
+                            
+                            function likeProduct(productId) {
+    $.ajax({
+        url: `/addToWishlist/${productId}`,
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ productId: productId }),
+        success: function (data) {
+            console.log(data,"data❤️");
+
+            // Check if the server response indicates success
+            if (data) {
+                // Display a success message with a normal JavaScript alert
+                Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: "Product Added to wishlist",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            } else {
+                // Display an error message with a normal JavaScript alert
+                alert('Failed to add product to wishlist!');
+            }
+        },
+        error: function (error) {
+            console.error('AJAX error:', error);
+            // Display an error message with a normal JavaScript alert
+            alert('Failed to add product to wishlist!');
+        }
+    });
+}
+
+
+                        </script>
