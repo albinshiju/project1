@@ -130,6 +130,7 @@ user_route.post('/returnorder/:orderId/:itemId',isBlocked.blockChecker,orderCont
 
 user_route.get('/canceledorders',orderController.canceledorder)
 
+
 /* payment */
 user_route.post('/createOrder',isBlocked.blockChecker,paymentController.createOrder)
 
@@ -138,6 +139,7 @@ user_route.post('/createOrder',isBlocked.blockChecker,paymentController.createOr
 user_route.get('/prdetails',isBlocked.blockChecker, productController.prdetails)
 
 
+user_route.get('/canceledorders',orderController.canceledorder)
 
 
 
