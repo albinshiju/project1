@@ -124,8 +124,9 @@ const loginLoad = async (req, res) => {
 const verifyLogin = async (req, res) => {
   try {
     const email = req.body.email;
-    console.log('Email from request:', email);
     const password = req.body.password;
+    console.log('Email from request:', email,password);
+
 
     const userData = await User.findOne({ email: email });
     if (userData) {
@@ -161,6 +162,7 @@ const verifyLogin = async (req, res) => {
     console.log(error.message);
   }
 };
+
 
 const loadRegister = async (req, res) => {
   try {
