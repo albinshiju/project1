@@ -1,7 +1,6 @@
 
 const mongoose = require('mongoose')
 // mongoose.connect("mongodb://127.0.0.1:27017/user_management_system")
-var hello = just
 mongoose.connect("mongodb+srv://albindamn:3nVPSVKDGU8v5yeL@cluster0.qfzk5do.mongodb.net/project1")
 require("dotenv").config();
 const express =  require('express')
