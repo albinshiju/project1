@@ -1,26 +1,53 @@
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.9.0/dist/sweetalert2.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+<style>
+  @media(max-width: 500px){
+	
+	.table thead{
+		display: none;
+	}
+
+	.table, .table tbody, .table tr, .table td{
+		display: block;
+		width: 100%;
+	}
+	.table tr{
+		margin-bottom:15px;
+	}
+	.table td{
+		text-align: right;
+		padding-left: 50%;
+		text-align: right;
+		position: relative;
+	}
+	.table td::before{
+		content: attr(data-label);
+		position: absolute;
+		left:0;
+		width: 50%;
+		padding-left:15px;
+		font-size:15px;
+		font-weight: bold;
+		text-align: left;
+	}
+}
+
+</style>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
 </head>
-
 <body>
-  <h1>User's List</h1>
-
   
 
-  <!-- <a href="/admin/new-user" class="btn btn-success">
-    <i class="fas fa-user-plus"></i> Add New User
-  </a> -->
-  <br><br>
+
   <div class="container">
-    <table class="table table-striped">
+    <table id="productsTable" class="display">
       <thead>
         <tr>
           <th>Name</th>
@@ -35,35 +62,27 @@
         <% if (users.length> 0) { %>
           <% for (let i=0; i < users.length; i++) { %>
             <tr>
-              <td>
+              <td data-label="Name">
                 <%= users[i].name %>
               </td>
-              <td>
+              <td data-label="Email">
                 <%= users[i].email %>
               </td>
-              <td>
+              <td data-label="Mobile">
                 <%= users[i].mobile %>
               </td>
-              <td>
+              <td data-label="Status">
                 <% if (users[i].is_blocked===1) { %>
                   Blocked
                   <% } else if (users[i].is_blocked===0) { %>
                     Active
                     <% } %>
               </td>
-              <td>
+              <td data-label="Image">
                 <img src="/userImages/<%= users[i].image %>" width="50" height="50" alt="<%= users[i].image %>">
               </td>
-              <td>
-                <!-- <a href="/admin/edit-user?id=<%= users[i]._id %>" class="edit-user" data-user-id="<%= users[i]._id %>">
-                  <i class="fas fa-edit"></i> Edit
-                </a>
-                <a  onclick="confirmRemove('<%= users[i]._id %>')">
-                  <i class="fas fa-trash-alt"></i> Delete
-                </a> -->
-
-
-                <a href="/admin/blockuser?id=<%= users[i]._id %>">
+              <td data-label="Action">
+                <a class="btn btn-primary" href="/admin/blockuser?id=<%= users[i]._id %>">
                   <i class="fas fa-lock"></i>
                   <% if (users[i].is_blocked===1) { %>
                     Unblock
@@ -89,11 +108,16 @@
   </a>
 
 
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <!-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script> -->
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.9.0/dist/sweetalert2.all.min.js"></script>
+  <script>
+    $(document).ready(function () {
+     $('#productsTable').DataTable();
+   });
+  </script>
 <script>
   function confirmRemove(productId) {
       Swal.fire({
@@ -116,4 +140,4 @@
   
 
 </body>
-  </html>
+</html>

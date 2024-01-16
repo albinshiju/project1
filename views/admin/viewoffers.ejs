@@ -34,6 +34,36 @@
 td a:hover {
   background-color: #45a049;
 }
+@media(max-width: 500px){
+	
+	.table thead{
+		display: none;
+	}
+
+	.table, .table tbody, .table tr, .table td{
+		display: block;
+		width: 100%;
+	}
+	.table tr{
+		margin-bottom:15px;
+	}
+	.table td{
+		text-align: right;
+		padding-left: 50%;
+		text-align: right;
+		position: relative;
+	}
+	.table td::before{
+		content: attr(data-label);
+		position: absolute;
+		left:0;
+		width: 50%;
+		padding-left:15px;
+		font-size:15px;
+		font-weight: bold;
+		text-align: left;
+	}
+}
 
   </style>
 </head>
@@ -52,9 +82,9 @@ td a:hover {
                 <% offers.forEach(each_offer =>{%>
               <tr>
                 
-                <td><%= each_offer.category.categoryName %></td>
-                <td><%= each_offer.percentage %>%</td>
-                <td><a href="" onclick="confirmRemove1(`<%= each_offer.category._id %>`)">Remove</a></td>
+                <td data-label="Category Name"><%= each_offer.category.categoryName %></td>
+                <td data-label="Percentage"><%= each_offer.percentage %>%</td>
+                <td data-label="Action" ><a href="" onclick="confirmRemove1(`<%= each_offer.category._id %>`)">Remove</a></td>
               </tr>
               <%}) %>
 

@@ -1,4 +1,5 @@
 <!-- orderItems.ejs -->
+<%- include('navbarMobile.ejs') %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -6,27 +7,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Order Items</title>
-</head>
-
-<body>
-
-
-
-</body>
-
-</html>
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Return Approval Page</title>
+  <title>Returns   Approval Page</title>
 
   <!-- Bootstrap CSS -->
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    @media(max-width: 500px){
+	
+	.table thead{
+		display: none;
+	}
 
+	.table, .table tbody, .table tr, .table td{
+		display: block;
+		width: 100%;
+	}
+	.table tr{
+		margin-bottom:15px;
+	}
+	.table td{
+		text-align: right;
+		padding-left: 50%;
+		text-align: right;
+		position: relative;
+	}
+	.table td::before{
+		content: attr(data-label);
+		position: absolute;
+		left:0;
+		width: 50%;
+		padding-left:15px;
+		font-size:15px;
+		font-weight: bold;
+		text-align: left;
+	}
+}
+  </style>
   <style>
     table {
       border-collapse: collapse;
@@ -79,16 +95,16 @@
       <tbody>
         <% orders.forEach(items=> { %>
           <tr>
-            <td>
+            <td data-label="Order id">
               <%= items._id %>
             </td>
-            <td>
+            <td data-label="Items id">
               <%= items.items._id %>
             </td>
-            <td>
+            <td data-label="Reason">
               <%= items.items.reason %>
             </td>
-            <td><button class="approve-btn btn btn-warning text-white" data-item-id="<%= items.items._id %>"
+            <td data-label="Action"><button class="approve-btn btn btn-warning text-white" data-item-id="<%= items.items._id %>"
                 data-order-id="<%= items._id %>" onclick="returnProduct(this)">approve</button>
 
             </td>

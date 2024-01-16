@@ -11,10 +11,13 @@
             font-size: 28px;
         }
     
-        .navbar-nav .nav-link {
-            color: #333;
-            font-weight: bold;
-        }
+       .nav-link2{
+        color: black;
+        text-decoration: underline;
+       }
+       .nav-link2 a:hover {
+        color: #790000;
+    }
     
         .header__nav__option {
             display: flex;
@@ -30,6 +33,23 @@
             border-radius: 5px;
             font-weight: bold;
         }
+        .navbar-nav {
+            background-color: white;
+        }
+        @media (min-width: 500px) {
+        .navbar-nav li:not(.nav-item.active:nth-child(2)):not(.nav-item.active:nth-child(3)) {
+            display: none; /* Hide all navbar links except "Products" and "My Profile" */
+        }
+
+        .navbar-toggler {
+            display: none; /* Hide the toggle button */
+        }
+
+        .header__nav__option {
+            display: flex; /* Show the additional options */
+        }
+    
+    }
     </style>
 </head>
 <body>
@@ -46,14 +66,35 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item active">
-                            <a class="nav-link" href="/home">Home</a>
+                            <a class="nav-link2" href="/home">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/allproducts">Products</a>
+                        <li class="nav-item active">
+                            <a class="nav-link2" href="/allproducts">Products</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link2" href="/userprofile">My Profile</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link2" href="/showorders">Show Orders</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link2" href="/changepassword">Change Password</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link2" href="/canceledorders">Cancelled Orders</a>
                         </li>
                         
-                        <li class="nav-item">
-                            <a class="nav-link" href="/userprofile">My Profile</a>
+                        <li class="nav-item active">
+                            <a class="nav-link2" href="/wallethistory">wallethistory</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link2" href="/editprofile">Edit profile</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link2" href="/home">Home</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link2" href="/logout">Logout</a>
                         </li>
                     </ul>
     

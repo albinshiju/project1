@@ -1,13 +1,7 @@
-<%- include('sidebar.ejs') %>
-<section class="is-title-bar">
-  <div class="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
-    <ul>
-      <li>Admin</li>
-      <li>category</li>
-    </ul>
-   
-  </div>
-</section>
+<%- include('navbarMobile.ejs') %>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -17,9 +11,52 @@
   <title>Document</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.9.0/dist/sweetalert2.min.css">
+  <style>
+    @media(max-width: 500px){
+	
+	.table thead{
+		display: none;
+	}
+
+	.table, .table tbody, .table tr, .table td{
+		display: block;
+		width: 100%;
+	}
+	.table tr{
+		margin-bottom:15px;
+	}
+	.table td{
+		text-align: right;
+		padding-left: 50%;
+		text-align: right;
+		position: relative;
+	}
+	.table td::before{
+		content: attr(data-label);
+		position: absolute;
+		left:0;
+		width: 50%;
+		padding-left:15px;
+		font-size:15px;
+		font-weight: bold;
+		text-align: left;
+	}
+}
+  </style>
 </head>
 
 <body>
+  <%- include('sidebar.ejs') %>
+
+  <section class="is-title-bar">
+    <div class="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
+      <ul>
+        <li>Admin</li>
+        <li>category</li>
+      </ul>
+     
+    </div>
+  </section>
   <br>
   <!-- <h5>Add Categories</h5> -->
     <button onclick="addCategory()" class="btn btn-primary">Add Categories</button>
@@ -28,7 +65,7 @@
       <br>
     <h4>Categories</h4>
     <table class="table table-striped">
-      <tbody>
+      <thead>
         <tr>
           <th>category name</th>
           <th>Action</th>
@@ -36,25 +73,28 @@
           <th>change status</th>
 
         </tr>
+      </thead>
+      <tbody>
+        
         <% categories.forEach(function(category) { %>
           <tr>
-            <td>
+            <td data-label="Category Name">
               <p id="<%= 'category_' + category._id %>">
                 <%= category.categoryName %>
               </p>
             </td>
             <td>
-              <button onclick="editCategory('<%= category._id %>')">Edit</button>
+              <button class="btn btn-primary" onclick="editCategory('<%= category._id %>')">Edit</button>
             </td>
-            <td>
+            <td data-label="Category Status">
               <% if (category.active) { %>
-                <p >Activate</p>
+                <p  class="text-success">Activate</p>
               <% } else { %>
-                <p >Deactivate</p>
+                <p class="text-danger" >Deactivate</p>
               <% } %>
             </td>
-            <td>
-              <button onclick="editStatus('<%= category._id %>')">change</button>
+            <td >
+              <button class="btn btn-warning" onclick="editStatus('<%= category._id %>')">change</button>
             </td>
           </tr>
         <% }) %>

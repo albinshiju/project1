@@ -1,4 +1,6 @@
 <%- include('sidebar.ejs') %>
+<%- include('navbarMobile.ejs') %>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -47,6 +49,36 @@
   #productsTable_info {
     margin-top: 10px; /* Adjust as needed */
   }
+  @media(max-width: 500px){
+	
+	.table thead{
+		display: none;
+	}
+
+	.table, .table tbody, .table tr, .table td{
+		display: block;
+		width: 100%;
+	}
+	.table tr{
+		margin-bottom:15px;
+	}
+	.table td{
+		text-align: right;
+		padding-left: 50%;
+		text-align: right;
+		position: relative;
+	}
+	.table td::before{
+		content: attr(data-label);
+		position: absolute;
+		left:0;
+		width: 50%;
+		padding-left:15px;
+		font-size:15px;
+		font-weight: bold;
+		text-align: left;
+	}
+}   
 </style>
 
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
@@ -81,15 +113,15 @@
         <% if (product.length> 0) { %>
           <% for (let i=0; i < product.length; i++) { %>
             <tr>
-              <td>
+              <td data-label="Name">
                 <%= product[i].name %>
               </td>
-              <td>₹<%= product[i].price %>
+              <td data-label="Price">₹<%= product[i].price %>
               </td>
-              <td>
+              <td data-label="Description">
                 <%= product[i].description %>
               </td>
-              <td>
+              <td data-label="Status">
                 <% if (product[i].is_deleted===1) { %>
                   removed
                   <% } else if (product[i].is_deleted===0) { %>
@@ -97,11 +129,11 @@
                     <% } %>
 
               </td>
-              <td>
+              <td data-label="Image">
                 <img src="/productImages/<%= product[i].images[0] %>" width="100" height="100"
                   alt="<%= product[i].image %>">
               </td>
-              <td>
+              <td >
                 <a class="btn btn-primary" onclick="confirmEdit('<%= product[i]._id %>')">
                   <i class="fas fa-edit"></i> Edit
                 </a>

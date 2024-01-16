@@ -193,7 +193,7 @@ const blockuser = async (req, res) => {
                 users.is_blocked = 1;
             }
             await users.save();
-            res.redirect('/admin/dashboard');
+            res.redirect('/admin/home');
         } else {
             console.log(error);
             res.status(404).send('Product not found');

@@ -1,3 +1,5 @@
+<%- include('navbarMobile.ejs') %>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,6 +12,38 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
         crossorigin="anonymous">
+        <style>
+         @media(max-width: 500px){
+	
+	.table thead{
+		display: none;
+	}
+
+	.table, .table tbody, .table tr, .table td{
+		display: block;
+		width: 100%;
+	}
+	.table tr{
+		margin-bottom:15px;
+	}
+	.table td{
+		text-align: right;
+		padding-left: 50%;
+		text-align: right;
+		position: relative;
+	}
+	.table td::before{
+		content: attr(data-label);
+		position: absolute;
+		left:0;
+		width: 50%;
+		padding-left:15px;
+		font-size:15px;
+		font-weight: bold;
+		text-align: left;
+	}
+}   
+        </style>
 </head>
 <%- include('sidebar.ejs')  %>
 <body>
@@ -115,13 +149,13 @@
                     data.alldata.forEach(item => {
                         salesTableBody.innerHTML += `
                             <tr>
-                                <td>${item.orderid}</td>
-                                <td>${item.productName}</td>
-                                <td>${item.productPrice}₹</td>
-                                <td>${item.quantity}</td>
-                                <td>${item.totalprice}₹</td>
-                                <td>${item.paymentMethod}</td>
-                                <td>${item.date}</td>
+                                <td data-label="Item">${item.orderid}</td>
+                                <td data-label="Product Name">${item.productName}</td>
+                                <td data-label="Product Price">${item.productPrice}₹</td>
+                                <td data-label="Quantity">${item.quantity}</td>
+                                <td data-label="Total Price">${item.totalprice}₹</td>
+                                <td data-label="Payment Method">${item.paymentMethod}</td>
+                                <td data-label="Date">${item.date}</td>
                             </tr>
                         `;
                     });

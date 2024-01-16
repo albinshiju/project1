@@ -1,7 +1,7 @@
 
 const mongoose = require('mongoose')
-// mongoose.connect("mongodb://127.0.0.1:27017/user_management_system")
-mongoose.connect("mongodb+srv://albindamn:3nVPSVKDGU8v5yeL@cluster0.qfzk5do.mongodb.net/project1")
+mongoose.connect("mongodb://127.0.0.1:27017/user_management_system")
+// mongoose.connect("mongodb+srv://albindamn:3nVPSVKDGU8v5yeL@cluster0.qfzk5do.mongodb.net/project1")
 require("dotenv").config();
 const express =  require('express')
 const app = express()
@@ -14,6 +14,6 @@ app.use('/admin',adminRoute)
 
 
 
-app.listen(300,(req,res)=>{
+app.listen(3000,(req,res)=>{
     console.log("server is 3000");  
 })

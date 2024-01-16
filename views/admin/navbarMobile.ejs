@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    /* Global Styles */
+    body {
+        margin: 0;
+        font-family: 'Arial', sans-serif;
+        box-sizing: border-box;
+    }
+
+    /* Header Styles */
+    .header {
+        background-color: #f8f8f8;
+        padding: 10px;
+    }
+
+    .navbar-brand {
+        font-weight: bold;
+        font-size: 28px;
+        color: #333;
+        text-decoration: none;
+    }
+
+    .navbar-toggler-icon {
+        background-color: #333;
+    }
+
+    .navbar-nav {
+        list-style: none;
+        display: flex;
+    }
+
+    .nav-item {
+        margin-right: 20px;
+    }
+
+    .nav-link {
+        color: #333;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .nav-link:hover {
+        color: #790000;
+    }
+
+    .dropdown-menu {
+        display: none;
+        position: absolute;
+        background-color: #f8f8f8;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        z-index: 1;
+    }
+
+    .dropdown:hover .dropdown-menu {
+        display: block;
+    }
+
+    .dropdown-item {
+        padding: 10px;
+        color: #333;
+        text-decoration: none;
+        display: block;
+    }
+
+    .logout-btn {
+        text-decoration: none;
+        color: #333;
+        background-color: #f8f8f8;
+        padding: 10px 15px;
+        border-radius: 5px;
+        font-weight: bold;
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 1023px) {
+        .asda {
+            display: block;
+        }
+
+        .navbar-nav {
+            flex-direction: column;
+        }
+
+        .nav-item {
+            margin: 10px 0;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .asda {
+            display: none;
+        }
+    }
+
+    /* Additional Styles */
+    .menu_list {
+        margin: 0;
+        padding: 0;
+    }
+
+    .menu-item-label {
+        margin-left: 10px;
+    }
+
+    .menu-label {
+        margin-top: 20px;
+        margin-bottom: 5px;
+    }
+
+    .menu_list,
+    .menu-label {
+        display: inline-block;
+    }
+
+    .menu_list li {
+        list-style-type: none;
+        margin: 10px 0;
+    }
+
+    .menu_list li a {
+        text-decoration: none;
+        color: #f8f8f8;
+    }
+
+    .menu_list li a:hover {
+        color: #790000;
+    }
+
+    .header__nav__option {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .header__nav__option img {
+        width: 24px;
+        height: 24px;
+    }
+
+    .header__nav__option span {
+        font-weight: bold;
+    }
+    .menu_list{
+      background-color: #333;
+    }
+</style>
+</head>
+<body>
+  <header class="asda header bg-light">
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <a class="navbar-brand" href="/admin/home" style="text-decoration: none; color: blue; font-weight: bold; font-size: 28px;">speedcart.com</a>
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+              
+              <ul class="menu_list">
+                <li class="--set-active-tables-html">
+                  <a href="/admin/addproducts">
+                    <span>-</span>
+        
+                    <span class="menu-item-label">Add Products</span>
+                  </a>
+                </li>
+                <li class="--set-active-forms-html">
+                  <a href="/admin/viewproducts">
+                    <span>-</span>
+        
+                    <span class="menu-item-label">View Products</span>
+                  </a>
+                </li>
+                <li class="--set-active-profile-html">
+                  <a href="/admin/category">
+                    <span>-</span>
+        
+                    <span class="menu-item-label">Category</span>
+                  </a>
+                </li>
+                
+                <li class="--set-active-profile-html">
+          
+                  <a href="/admin/couponmanagement">
+                    <span>-</span>
+        
+                    <span class="menu-item-label">Coupon Management</span>
+                  </a>
+                </li>
+                <li class="--set-active-something-html">
+          
+                  <a href="/admin/salesreport">
+                    <span>-</span>
+        
+                    <span class="menu-item-label">Sales Report</span>
+                  </a>
+                </li>
+                <li class="--set-active-profile-html">
+          
+                  <a href="/admin/graph">
+                    <span>-</span>
+        
+                    <span class="menu-item-label">Graph</span>
+                  </a>
+                </li>
+                <li class="--set-active-something-html">
+          
+                  <a href="/admin/orders">
+                    <span>-</span>
+        
+                    <span class="menu-item-label">View Orders</span>
+                  </a>
+                </li>
+                <li class="--set-active-something-html">
+          
+                  <a href="/admin/offers">
+                    <span>-</span>
+        
+                    <span class="menu-item-label">Add Offers</span>
+                  </a>
+                </li>
+                <li class="--set-active-something-html">
+          
+                  <a href="/admin/returnapproval">
+                    <span>-</span>
+        
+                    <span class="menu-item-label">Return Approval</span>
+                  </a>
+                </li>
+                <li class="--set-active-something-html">
+          
+                  <a href="/admin/banners">
+                    <span>-</span>
+        
+                    <span class="menu-item-label">Banner</span>
+                  </a>
+                </li>
+                
+              </ul>
+              <ul class="menu_list">
+                
+                <li>
+                  <a href="/admin/about" class="has-icon">
+                    <span class="icon"><i class="mdi mdi-help-circle"></i></span>
+                    <span class="menu-item-label">About Admin</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="/admin/logout" class="has-icon">
+                    <span class="icon"><i class="mdi mdi-github-circle"></i></span>
+                    <span class="menu-item-label">Logout</span>
+                  </a>
+                </li>
+              </ul>
+
+                
+            </div>
+        </nav>
+    </div>
+</header>
+
+  <!-- Add Bootstrap and jQuery scripts for dropdown functionality -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
