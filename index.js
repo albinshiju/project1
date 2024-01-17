@@ -4,7 +4,7 @@ mongoose.connect("mongodb+srv://albindamn:3nVPSVKDGU8v5yeL@cluster0.qfzk5do.mong
 require("dotenv").config();
 const express =  require('express')
 const app = express()
-
+var hello = 1
 const userRoute = require('./routes/userRoute');
 app.use('/',userRoute)
 
