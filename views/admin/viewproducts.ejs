@@ -173,8 +173,9 @@
   </a>
   <script>
     $(document).ready(function () {
-     $('#productsTable').DataTable();
-   });
+    $('#productsTable').DataTable({
+    });
+  });
  </script>
  
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.9.0/dist/sweetalert2.all.min.js"></script>
@@ -202,8 +203,8 @@
     function confirmRemove(productId) {
       Swal.fire({
 
-        title: 'Edit Product',
-        text: 'Are you sure you want to edit this product?',
+        title: 'Remove Product',
+        text: 'Are you sure you want to remove this product?',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Yes',

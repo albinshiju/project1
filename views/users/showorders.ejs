@@ -167,38 +167,46 @@
                                             </p>
                                         </div>
                                         <div class="col-md-3 text-center">
-                                            <!-- <p class="text-muted mb-0">orginal price:
-                                        </p> -->
-                                            <% if(item.return===false) {%>
-                                                <p>Return Request Was Sent.</p>
-                                                <%} else if(item.return===true){%>
-                                                    <p class="badge-info">Product was returned.</p>
-                                                   
-                                                        <%} else{%>
-                                                            <% if(order.orderStatus==="Delivered") {%>
+                                            <p class="text-muted mb-0 small">Per Unit:                                         <%= item.offerprice > 0 ? item.offerprice * item.quantity : item.price * item.quantity %>
 
-                                                                <a href="/returnorder/<%= order._id %>/<%= item._id %>"
-                                                                    class="return-product btn btn-warning text-white">Return
-                                                                    Order</a>
-                                                                <%}%>
-
-                                                                    <%}%>
-                                                                        <!-- 
-                                                data-item-id="<%= item._id %>"
-                                            data-order-id="<%= order._id %>"
-                                            onclick="returnProduct(this)">Return Product</button>
-                                             -->
-
-
-
-
+                                            </p>
                                         </div>
+                                        
                                     </div>
-                                    <hr class="mb-4" style="background-color: #e0e0e0; opacity: 1;">
+                                    
 
                                 </div>
+                                
 
                             </div>
+                            <div class="col-md-3 text-center">
+                                <!-- <p class="text-muted mb-0">orginal price:
+                            </p> -->
+                                <% if(item.return===false) {%>
+                                    <p>Return Request Was Sent.</p>
+                                    <%} else if(item.return===true){%>
+                                        <p class="badge-info">Product was returned.</p>
+                                       
+                                            <%} else{%>
+                                                <% if(order.orderStatus==="Delivered") {%>
+
+                                                    <a href="/returnorder/<%= order._id %>/<%= item._id %>"
+                                                        class="return-product btn btn-warning text-white">Return
+                                                        Order</a>
+                                                    <%}%>
+
+                                                        <%}%>
+                                                            <!-- 
+                                    data-item-id="<%= item._id %>"
+                                data-order-id="<%= order._id %>"
+                                onclick="returnProduct(this)">Return Product</button>
+                                 -->
+
+
+
+
+                            </div>
+                            <br>
                             <div class="d-flex justify-content-between mb-5">
                                 <p class="text-muted mb-0">Receipt Voucher : <%= order._id %>
                                 </p>
@@ -208,7 +216,7 @@
                                 <div class="d-flex justify-content-between pt-2">
                                     <!-- <p class="fw-bold mb-0">Order Details</p> -->
                                     <p class="text-muted mb-0"><span class="fw-bold me-4">Total</span>
-                                        <%= item.price * item.quantity %>
+                                        <%= item.offerprice > 0 ? item.offerprice * item.quantity : item.price * item.quantity %>
                                     </p>
                                 </div>
                             </div>
@@ -264,15 +272,15 @@
                                 <!-- from here -->
 
 
-                                <!-- <div class="d-flex justify-content-between pt-2">
-                                        <p class="text-muted mb-0">Invoice Number : 788152</p>
-                                        <p class="text-muted mb-0"><span class="fw-bold me-4">Discount</span> $19.00</p>
+                                <div class="d-flex justify-content-between pt-2">
+                                        <p class="text-muted mb-0">Payment Mode : <%= order.PaymentMethod %></p>
+                                        <!-- <p class="text-muted mb-0"><span class="fw-bold me-4">Discount</span> $19.00</p> -->
                                     </div>
 
                                     <div class="d-flex justify-content-between">
-                                        <p class="text-muted mb-0">Invoice Date : 22 Dec, 2019</p>
-                                        <p class="text-muted mb-0"><span class="fw-bold me-4">GST 18%</span> 123</p>
-                                    </div> -->
+                                        <p class="text-muted mb-0">Date of purchase: <%= order.createdAt.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }) %></p>
+                                        <!-- <p class="text-muted mb-0"><span class="fw-bold me-4">GST 18%</span> 123</p> -->
+                                    </div>
 
 
                                 <% if (order.orderStatus !=='Delivered' ) { %>
@@ -313,30 +321,7 @@
                             <% }) %>
 
 
-                                
-                                <script>
-                                    //                 $(document).on('click', '.return-product', function() {
-                                    //     const orderId = $(this).data('order-id');
-                                    //     const itemId = $(this).data('item-id');
-                                    //     console.log("cancel product", orderId, itemId);
-
-                                    //     // Send AJAX request to cancel the product
-                                    //     $.ajax({
-                                    //         type: 'POST',
-                                    //         url: `/cart/returnproductseperate/${orderId}/${itemId}`,
-                                    //         success: function (response) {
-                                    //             // Handle success
-                                    //             console.log('Product cancelled successfully');
-                                    //             // Update the UI or perform any additional tasks
-                                    //         },
-                                    //         error: function (error) {
-                                    //             // Handle error
-                                    //             console.error('Error cancelling product:', error);
-                                    //         }
-                                    //     });
-                                    // });
-
-                                    //                 </script>
+                               
 
 
                                 <script>

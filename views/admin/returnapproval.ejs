@@ -10,6 +10,8 @@
   <title>Returns   Approval Page</title>
 
   <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
   <style>
     @media(max-width: 500px){
@@ -65,6 +67,8 @@
       padding: 10px;
     }
   </style>
+  <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+
 </head>
 
 <body>
@@ -83,7 +87,7 @@
 
     </section>
 
-    <table class="table">
+    <table id="productsTable" class="table">
       <thead class="thead-light">
         <tr>
           <th>Order ID</th>
@@ -94,7 +98,7 @@
       </thead>
       <tbody>
         <% orders.forEach(items=> { %>
-          <tr>
+          <tr value = "<%= items._id  %>">
             <td data-label="Order id">
               <%= items._id %>
             </td>
@@ -116,82 +120,71 @@
     </table>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+
+    <script>
+      $(document).ready(function () {
+       $('#productsTable').DataTable();
+     });
+   </script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.9.0/dist/sweetalert2.all.min.js"></script>
+
     <script>
-      document.addEventListener('DOMContentLoaded', function () {
-        var approveButtons = document.getElementsByClassName('approve-btn');
+      
+    $(document).on('click', '.approve-btn', function () {
+    const orderId = $(this).data('order-id');
+    const itemId = $(this).data('item-id');
 
-        Array.from(approveButtons).forEach(function (button) {
-          button.addEventListener('click', function (event) {
-            event.preventDefault();
-            console.log("approve button clicked");
-            var orderNumber = button.getAttribute('value');
-            console.log(orderNumber);
-
-            fetch(`/admin/approveOrder/${orderNumber}`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ orderno: orderNumber }),
+    // Display SweetAlert confirmation
+    Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, approve it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // If the user confirms, proceed with the fetch request
+            fetch(`/admin/approveOrder/${orderId}/${itemId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ orderId, itemId }),
             })
-              .then(response => response.json())
-              .then(data => {
-                console.log("hello");
-                // Handle the response from the server
-                console.log(data);
-                // You can update the UI or take any necessary actions here
-                if (data.success) {
-                  // Find the table row corresponding to the approved order
-                  var tableRow = document.querySelector(`[value="${orderNumber}"]`).closest('tr');
-                  console.log("row reached");
-                  // Remove the table row from the DOM
-                  tableRow.remove();
-                } else {
-                  console.error('Failed to approve order.');
-                }
-              })
-              .catch(error => {
-                console.error('Error:', error);
-              });
-          });
-        });
-      });
+                .then(response => response.json())
+                .then(data => {
+                    // Handle the response from the server
+                    console.log(data);
+                    // You can update the UI or take any necessary actions here
+                    if (data.success) {
+                        // Find the table row corresponding to the approved order
+                        var tableRow = document.querySelector(`[value="${orderId}"]`).closest('tr');
+                        console.log("row reached");
+                        // Remove the table row from the DOM
+                        tableRow.remove();
 
-    </script>
-    <script>
-      $(document).on('click', '.approve-btn', function () {
-        const orderId = $(this).data('order-id');
-        const itemId = $(this).data('item-id');
-        console.log("approve return", orderId, itemId);
-        fetch(`/admin/approveOrder/${orderId}/${itemId}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ orderId,itemId }),
-        })
-          .then(response => response.json())
-          .then(data => {
-            console.log("hello");
-            // Handle the response from the server
-            console.log(data);
-            // You can update the UI or take any necessary actions here
-            if (data.success) {
-              // Find the table row corresponding to the approved order
-              var tableRow = document.querySelector(`[value="${orderId}"]`).closest('tr');
-              console.log("row reached");
-              // Remove the table row from the DOM
-              tableRow.remove();
-            } else {
-              console.error('Failed to approve order.');
-            }
-          })
-          .catch(error => {
-            console.error('Error:', error);
-          });
-      });
+                        // Display success message
+                        Swal.fire({
+                            title: "Approved!",
+                            text: "The order has been approved.",
+                            icon: "success"
+                        });
+                    } else {
+                        console.error('Failed to approve order.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+    });
+});
+
 
     </script>
 

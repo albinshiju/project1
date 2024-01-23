@@ -71,6 +71,7 @@ const addcategory = async (req, res) => {
   };
 const categoryedit = async(req,res)=>{
      try {
+      console.log("😍ed🤦‍♀️");
         const id = req.query.id;
         const newname = req.body.newCategoryName
         console.log(newname);
@@ -86,10 +87,14 @@ const categoryedit = async(req,res)=>{
 } 
 const categorystatus = async(req,res)=>{
     try {
+      console.log("😍🤦‍♀️");
+
         const categoryId = req.body.categoryId;
 
         const currentStatus = await Category.findOne({ _id: categoryId }, 'active');
+        console.log(currentStatus,"💖🤣👍😘😂");
         const updatedStatus = !currentStatus.active;
+        console.log(updatedStatus,"😂👍👍🤣");
         console.log(updatedStatus);
     
         const updatedCategory = await Category.findByIdAndUpdate(
@@ -97,10 +102,38 @@ const categorystatus = async(req,res)=>{
           { $set: { active: updatedStatus } },
           { new: true }
         );
+
+        const statusText = updatedStatus ? 'active' : 'deactive';
+        res.send({ success:true, status:statusText });
+
     } catch (error) {
        console.log(error.message);
    }
 } 
+const showcategorystatus = async (req, res) => {
+  try {
+    const categoryId = req.body.categoryId;
+    console.log("showcategorystatus");
+    
+    // Use findOne to find the Category with the given categoryId
+    const category = await Category.findOne({ _id: categoryId }, 'active');
+    
+    // Check if category is found and has active field
+    if (category && category.active !== undefined) {
+      const statusText = category.active ? 'active' : 'Inactive';
+      console.log("🤣💖", statusText);
+      res.send({ success: true, status: statusText });
+    } else {
+      // Handle the case where category or active field is not found
+      console.log("Category or active field not found");
+      res.status(404).send({ success: false, message: "Category not found or active field missing" });
+    }
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send({ success: false, message: "Internal server error" });
+  }
+}
+
 const offers = async(req,res)=>{
   try {
     console.log("offers");
@@ -156,6 +189,7 @@ module.exports = {
     categorystatus,
     offers,
     addoffers,
-    removeoffer
+    removeoffer,
+    showcategorystatus
     
 }

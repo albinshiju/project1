@@ -75,6 +75,8 @@
                                                             </td>
 
                                                             <td>
+                                                                <% if (item.product.stock> 0) { %>
+
                                                                 <div class="input-group mb-3 d-flex align-items-center quantity-container"
                                                                     style="max-width: 120px;">
                                                                     <div class="input-group-prepend">
@@ -92,17 +94,20 @@
                                                                         aria-label="Example text with button addon"
                                                                         aria-describedby="button-addon1">
                                                                     <div class="input-group-append">
-                                                                        <% if (item.product.stock> 0) { %>
                                                                             <button
                                                                                 class="btn btn-outline-black increase"
                                                                                 type="button">+</button>
-                                                                            <% } else { %>
-                                                                                <a>Out of stock</a>
 
-                                                                                <% } %>
 
                                                                     </div>
                                                                 </div>
+                                                                <% } else { %>
+                                                                    <p>Out of stock</p>
+
+
+                                                                    <% } %>
+
+
                                                             </td>
                                                             <td>
                                                                 <% const productOffer2=offers.find(offer=>
@@ -126,7 +131,7 @@
                                                             <td><button class="btn btn-black btn-sm remove-product" ₹
                                                                     &nbsp;<%=item.product.price %>
                                                                     data-product-id="<%= item.product._id %>"
-                                                                        onclick="productAdd()"><i class="far fa-trash-alt trash-icon"></i></button></td>
+                                                                        onclick="productRemove(`<%= item.product._id %>`)"><i class="far fa-trash-alt trash-icon"></i></button></td>
                                                     </tr>
 
 
@@ -173,14 +178,7 @@
                                     </div>
 
 
-                                    <div class="row mb-5">
-                          <div class="col-md-6">
-                              <span class="text-black">Subtotal</span>
-                          </div>
-                          <div class="col-md-6 text-right" style="display: flex;">
-                              <strong>₹</strong> &nbsp;<strong class="text-black"></strong>
-                          </div>
-                      </div> 
+                                
 
                                     <div class="row mb-5">
                                         <div class="col-md-6">
@@ -348,13 +346,28 @@
                             }
                         });
                     });
-                    function productAdd(e) {
-                        Swal.fire({
-                            icon: "error",
-                            title: "Removed...",
-                            text: "Product was removed!",
-                        });
-                    }
+                    function productRemove(productId) {
+                        console.log("product remove");
+    // Send AJAX request to remove the product
+    $.ajax({
+        type: 'POST',
+        url: `/cartremove/${productId}`,
+        success: function (response) {
+            console.log('Product removed successfully');
+
+            if (response === 'success') {
+                // Remove the product item from the UI
+                location.reload()
+            } else {
+                console.error('Error removing product. Server response:', response);
+            }
+        },
+        error: function (error) {
+            console.error('Error removing product:', error);
+        }
+    });
+}
+
 
 
 

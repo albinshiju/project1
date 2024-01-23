@@ -312,15 +312,20 @@ const addUser = async (req, res) => {
 
 const vieworders = async (req, res) => {
     try {
-               const orders = await Orders.find()
-                res.render('orders', {
-                    orders,
-                });
+        console.log("view order");
+        // Assuming there is a timestamp or date field named 'createdAt'
+        const orders = await Orders.find().sort();
+        console.log(orders);
+
+        res.render('orders', {
+            orders,
+        });
     } catch (error) {
         console.error('Error retrieving orders:', error);
         res.status(500).send('Internal Server Error');
     }
 };
+
 const orderDetailView = async(req,res)=>{
     try {
         const id = req.params.id;
@@ -418,15 +423,13 @@ const postaddcoupon = async(req,res)=>{
 }
 const deletecoupon = async (req, res) => {
     try {
-        const cd = req.query.couponId;
+        const cd = req.body.id;
         console.log(cd);
         const coupon = await Coupon.findOneAndDelete({ _id: cd });
         console.log(coupon);
 
         if (coupon) {
-            // Coupon found and deleted
-            const couponList = await Coupon.find({});
-            res.render('couponmanagement', { coupon: couponList });
+            res.send({success:true})
         } else {
             // Coupon not found
             res.status(404).json({ message: 'Coupon not found' });

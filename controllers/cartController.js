@@ -6,6 +6,28 @@ const Address = require('../models/addressModel')
 const Coupon = require('../models/couponModel')
 const Wallet = require('../models/walletModel')
 const Offer = require('../models/offerModel')
+const getTotalAmount = async (req, res) => {
+  try {
+      console.log("get total amt❤️");
+      const userId = req.session.user_id;
+      const cart = await Cart.findOne({ user: userId }).populate('items.product');
+      console.log("cart",cart);
+
+      let totalAmount = 0;
+      if (cart && cart.items.length > 0) {
+          for (const item of cart.items) {
+              if (item.product) {
+                  totalAmount += item.quantity * item.product.price;
+              }
+          }
+      }
+
+      res.status(200).json({ totalAmount });
+  } catch (error) {
+      console.error('Error calculating total amount:', error);
+      res.status(500).send('Internal Server Error');
+  }
+};
 const getTotalCount = async function (id) {
   try {
     const user = await User.findById({ _id: id });
@@ -267,7 +289,7 @@ module.exports = {
   addtocart,
   cart,
 
-
+  getTotalAmount,
   cartOperation,
   checkoutpage,
 

@@ -59,7 +59,7 @@ user_route.get('/verification', noCache(),isBlocked.blockChecker, userController
 user_route.post('/verification', noCache(),isBlocked.blockChecker, userController.sentVerificationLink);
 
 user_route.get('/checkusernameexist',userController.checkusername)
-
+ 
 
 
 user_route.get('/verify', noCache(),isBlocked.blockChecker, userController.verifyMail);
@@ -70,7 +70,7 @@ user_route.get('/logout', noCache(),isBlocked.blockChecker, auth.isLogin, userCo
 
 user_route.get('/otp', noCache(),isBlocked.blockChecker, userController.otpLoad);
 user_route.post('/verifyOTP', noCache(),isBlocked.blockChecker, userController.verifyOTP);
-user_route.get('/userprofile',isBlocked.blockChecker,userController.userprofile)
+user_route.get('/userprofile',auth.isLogin,isBlocked.blockChecker,userController.userprofile)
 user_route.get('/forget',isBlocked.blockChecker,userController.forgetpassword)
 user_route.post('/forget',isBlocked.blockChecker,userController.extractforgetpassword)
 user_route.get('/forget-password',isBlocked.blockChecker,userController.forgetpasswordload)
@@ -84,12 +84,15 @@ user_route.post('/addressmgt',isBlocked.blockChecker,userController.extractuserm
 user_route.get('/showaddress',isBlocked.blockChecker,userController.showaddress)
 user_route.post('/showaddress',isBlocked.blockChecker,userController.saveaddress)
 user_route.get('/addaddresscheckoutpage',isBlocked.blockChecker,userController.showaddress)
+user_route.get('/addaddresscheckoutpage1',isBlocked.blockChecker,userController.showaddress1)
+
 user_route.post('/addaddresscheckoutpage/:page',isBlocked.blockChecker,userController.saveaddress)
 user_route.post('/checkout',isBlocked.blockChecker,userController.extractcheckout)
 user_route.post('/beforeordersummary',isBlocked.blockChecker,userController.ordersummary)
 user_route.get('/place-order/:id',isBlocked.blockChecker,userController.placeorder)
 user_route.get('/showorders',isBlocked.blockChecker,userController.showorders)
 user_route.post('/cartremove/:productId',isBlocked.blockChecker,userController.cartremove)
+user_route.get('/getTotalAmount',isBlocked.blockChecker,cartController.getTotalAmount)
 user_route.post('/updatepassword',isBlocked.blockChecker,userController.updatepassword)
 user_route.get('/allproducts',isBlocked.blockChecker, userController.allproducts);
 

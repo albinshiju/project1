@@ -60,8 +60,11 @@
                           <p class="text-muted mb-0 small">Qty: <%= item.quantity %></p>
                         </div>
                         <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
-                          <p class="text-muted mb-0 small">$<%= item.price * item.quantity %></p>
+                          <p class="text-muted mb-0 small">
+                            $<%= item.offerprice ? item.offerprice * item.quantity : item.price * item.quantity %>
+                          </p>
                         </div>
+                        
                       </div>
                       <hr class="mb-4" style="background-color: #e0e0e0; opacity: 1;">
                       <div class="row d-flex align-items-center">

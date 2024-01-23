@@ -137,68 +137,9 @@
 
   
 <script>
-   $(document).ready(function () {
-    $('#productsTable').DataTable();
+  $(document).ready(function () {
+    $('#productsTable').DataTable({
+      "order": [[0, "desc"]] // This sets the default sorting order for the first column (Order #) to descending
+    });
   });
 </script>
-
-  <!-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.9.0/dist/sweetalert2.all.min.js"></script>
-  <script>
-    function confirmEdit(productId) {
-      Swal.fire({
-
-        title: 'Edit Product',
-        text: 'Are you sure you want to Approve this product?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes',
-        cancelButtonText: 'No',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // If the user clicks "Yes," proceed to the edit page
-          window.location.href = '/admin/approve/' + productId;
-        }
-      });
-    }
-    // Remove the following line: return false;
-    function confirmDelete(productId) {
-      Swal.fire({
-
-        title: 'Edit Product',
-        text: 'Are you sure you want to Deny this product?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes',
-        cancelButtonText: 'No',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // If the user clicks "Yes," proceed to the edit page
-          window.location.href = '/admin/deleteproduct/' + productId;
-        }
-      });
-    }
-    function confirmRemove(productId) {
-      Swal.fire({
-
-        title: 'Edit Product',
-        text: 'Are you sure you want to edit this product?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes',
-        cancelButtonText: 'No',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // If the user clicks "Yes," proceed to the edit page
-          window.location.href = '/admin/removeproduct/' + productId;
-        }
-      });
-    }
-
-  </script>
-</body>
-
-</html> -->

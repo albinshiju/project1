@@ -123,12 +123,14 @@ admin_route.get('/couponmanagement',adminAuth.isLogin,adminController.couponmana
 admin_route.get('/addcoupon',adminAuth.isLogin,adminController.addcoupon)
 admin_route.post('/addcoupon',adminAuth.isLogin,adminController.postaddcoupon)
 
-admin_route.get('/deletecoupon',adminAuth.isLogin,adminController.deletecoupon)
+admin_route.post('/deletecoupon',adminAuth.isLogin,adminController.deletecoupon)
 
 admin_route.get('/category',adminAuth.isLogin,categoryController.categorypage)
 admin_route.post('/addcategory',adminAuth.isLogin,categoryController.addcategory)
 admin_route.put('/categoryedit',categoryController.categoryedit)
 admin_route.post('/categoryedit',categoryController.categorystatus)
+admin_route.post('/categorystatus',categoryController.showcategorystatus)
+
 
 // banner
 admin_route.get('/banners',adminAuth.isLogin,bannerController.showBanners)

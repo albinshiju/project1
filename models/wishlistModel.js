@@ -14,6 +14,10 @@ const WishlistSchema = new Schema({
         ref: 'User', 
         required: true,
       },
+    offerprice:{
+      type:Number,
+      default:0
+    } ,
     price:Number,
     productname:String,
     image:String,

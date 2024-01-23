@@ -91,15 +91,15 @@ const insertUser = async (req, res) => {
 
       if (userData) {
         const otp = generateOTP();
-    
+
         otpStorage[email] = otp;
-    
+
         await sendVerifyMail(email, otp);
-        const refereduser = await User.findOne({username:referalcode})
-        console.log("referalcode"+refereduser);
-        if(refereduser){
-          console.log(refereduser.username,"❤️❤️");
-          await creditmoneyonreferal(refereduser.username,refereduser._id)
+        const refereduser = await User.findOne({ username: referalcode })
+        console.log("referalcode" + refereduser);
+        if (refereduser) {
+          console.log(refereduser.username, "❤️❤️");
+          await creditmoneyonreferal(refereduser.username, refereduser._id)
         }
         res.redirect('/verification');
       } else {
@@ -177,7 +177,7 @@ const loadHome = async (req, res) => {
     const userData = await User.findById({ _id: req.session.user_id });
     const productData = await Product.find({ is_deleted: 0 });
     // console.log(productData[1].stock,"😂productdta.stock");
-    res.render('home1', { user: userData, products: productData, cart , message:req.session.message,banner});
+    res.render('home1', { user: userData, products: productData, cart, message: req.session.message, banner });
   } catch (error) {
     console.log(error.message);
   }
@@ -247,7 +247,7 @@ const verificationLoad = async (req, res) => {
 };
 const sentVerificationLink = async (req, res) => {
   try {
-   
+
     res.render('otp', {
       message: 'OTP sent to your email address, please check your email',
     });
@@ -259,7 +259,7 @@ const sentVerificationLink = async (req, res) => {
 
 const verifyOTP = async (req, res) => {
   try {
-    
+
     const email = req.body.email;
     const userEnteredOTP = req.body.otp;
 
@@ -300,12 +300,12 @@ const otpLoad = async (req, res) => {
 
 const userprofile = async (req, res) => {
   try {
-    console.log(req.session.user_id+"session");
-    const wallet = await Wallet.findOne({user_id:req.session.user_id})
-    console.log("wallet"+wallet);
-    const addresses = await Address.find();
+    console.log(req.session.user_id + "session");
+    const wallet = await Wallet.findOne({ user_id: req.session.user_id })
+    console.log("wallet" + wallet);
+    const addresses = await Address.find({ userId: req.session.user_id });
     const user = await User.findOne({ _id: req.session.user_id })
-    return res.render('userprofile', { addresses, user , wallet });
+    return res.render('userprofile', { addresses, user, wallet });
   } catch (error) {
     console.log(error.message);
     res.status(500).send('Internal Server Error'); // You might want to send an error page
@@ -463,6 +463,9 @@ const extractusermgt = async (req, res) => {
 const showaddress = async (req, res) => {
   res.render("showaddress")
 }
+const showaddress1 = async (req, res) => {
+  res.render("showaddress2")
+}
 const saveaddress = async (req, res) => {
   try {
     const page = req.params.page;
@@ -498,18 +501,17 @@ const saveaddress = async (req, res) => {
       await addressSchema.save();
 
     }
-    if(page === 'page1'){
+    if (page === 'page1') {
       res.redirect('/cart/checkout')
 
-    }else{
+    } else {
       res.redirect('/userprofile')
 
     }
-    
-   
+
+
   } catch (error) {
     console.error('Error saving Address:', error);
-    // Handle the error as needed
   }
 }
 const ordersummary = async (req, res) => {
@@ -535,8 +537,8 @@ const ordersummary = async (req, res) => {
       prodId: item.product._id,
       image: item.product.image,
       quantity: item.quantity,
-      category:item.product.category,
-      
+      category: item.product.category,
+
     }));
 
     const orderSave = new Orders({
@@ -595,9 +597,10 @@ const checkoutAjaxAddress = async (req, res) => {
     const userId = req.session.user_id;
     const cart = await Cart.findOne({ user: userId }).populate("items.product");
     const addressSchema = await Address.findOne({ userId: userId });
-    console.log(payment);
+
     if (!cart) {
       console.log("Cart is not available");
+      return res.status(400).send("Cart not available");
     }
 
     const index = addressSchema.address[addressIndex];
@@ -608,61 +611,80 @@ const checkoutAjaxAddress = async (req, res) => {
       prodId: item.product._id,
       image: item.product.images[0],
       quantity: item.quantity,
-      category:item.product.category,
-
+      category: item.product.category,
+      subtotal: item.quantity * item.product.price,
     }));
+
+    // Fetch offers based on product categories
+    const categoryIds = items.map((item) => item.category);
+    const data = await Offer.find({ category: { $in: categoryIds } });
+
+    // Calculate offer price for each item
+    const itemsWithOffer = items.map((item) => {
+      const matchingOffer = data.find((offer) => offer.category.equals(item.category));
+      if (matchingOffer) {
+        // Apply offer percentage to calculate the discounted price
+        const discountedPrice = item.price - (item.price * matchingOffer.percentage / 100);
+        return {
+          ...item,
+          offerprice: discountedPrice,
+          offersubtotal: discountedPrice * item.quantity,
+        };
+      }
+      return item; // No offer for this category, keep the original price
+    });
 
     const orderSave = new Orders({
       userId: userId,
-      items: items,
+      items: itemsWithOffer, // Use the updated items array with offer prices
       address: index,
       totalprice: orderTotal,
       PaymentMethod: payment,
+      paymentStatus: 'pending', // Adjust as needed
+      deliveryStatus: 'pending', // Adjust as needed
+      orderStatus: 'pending',
     });
 
     await orderSave.save();
     await deductFromWallet(userId, orderTotal);
-
     await Cart.findOneAndDelete({ user: userId });
 
-
     const newOrder = orderSave._id;
-    const order = await Orders.find({ userId: userId });
+
+    // Handle different payment methods
     if (orderSave.PaymentMethod === 'COD') {
       const codSuccess = true;
       res.send({ codSuccess, id: newOrder });
-  } else if (orderSave.PaymentMethod === 'Razorpay') {
+    } else if (orderSave.PaymentMethod === 'Razorpay') {
       const razorpaySuccess = true;
       res.send({ razorpaySuccess, id: newOrder });
-  } else if (orderSave.PaymentMethod === 'Wallet') {  
-      // const wallet = await Wallet.findById("65919b234afc7edbec00bbd2");
-      const wallet = await Wallet.findOne({user_id:userId});
+    } else if (orderSave.PaymentMethod === 'Wallet') {
+      const wallet = await Wallet.findOne({ user_id: userId });
 
       if (wallet.walletBalance === 0) {
-          res.send({ walletSuccess: false, id: newOrder });
+        res.send({ walletSuccess: false, id: newOrder });
       } else {
-          const walletSuccess = true;
-          res.send({ walletSuccess, id: newOrder });
+        const walletSuccess = true;
+        res.send({ walletSuccess, id: newOrder });
       }
-  } else {
+    } else {
       console.log("Error Ajax 😒😒😒😒😒😒😒😒😒😒😒😒😒😒");
-  }
-  
-
-
+    }
   } catch (error) {
-    console.log('Try catch error in checkoutAjaxAddress  🤷‍♂️📀🤷‍♀️');
+    console.log('Try catch error in checkoutAjaxAddress 🤷‍♂️📀🤷‍♀️');
     console.log(error.message);
+    res.status(500).send('Internal Server Error');
   }
 };
+
 const deductFromWallet = async (userId, orderTotal) => {
   try {
-    console.log(userId,"🤣❤️😊😍🙌😘");
+    console.log(userId, "🤣❤️😊😍🙌😘");
 
-    const wallet = await Wallet.findOne({user_id:userId});
+    const wallet = await Wallet.findOne({ user_id: userId });
     // const wallet = await Wallet.findById("65919b234afc7edbec00bbd2")
-    console.log(wallet.walletBalance,"😘💕👍");
-    if (wallet.walletBalansce >= orderTotal) {
+    console.log(wallet.walletBalance, "😘💕👍");
+    if (wallet.walletBalance >= orderTotal) {
       wallet.walletBalance -= orderTotal;
       await wallet.save();
       console.log("Order total deducted from wallet balance");
@@ -705,20 +727,20 @@ const placeorder = async (req, res) => {
 const checkoutaddress = async (req, res) => {
   console.log("hi");
 }
-const checkusername = async(req,res)=>{
+const checkusername = async (req, res) => {
   console.log("checkusername");
 }
 const showorders = async (req, res) => {
   const id = req.session.user_id
   const offers = await Offer.find({})
-  const orders = await Orders.find({ userId: id, canceled: false }).sort({createdAt:-1})
+  const orders = await Orders.find({ userId: id, canceled: false }).sort({ createdAt: -1 })
   // console.log(orders);
   const returnorder = await Return.find({})
   // console.log("🤣",returnorder);
   if (orders.length > 0) {
-    res.render('showorders', { orders: orders , returnorder,offers})
+    res.render('showorders', { orders: orders, returnorder, offers })
   } else {
-    res.render('showorders', { orders: orders , returnorder,offers})
+    res.render('showorders', { orders: orders, returnorder, offers })
   }
 
 
@@ -735,12 +757,13 @@ const cartremove = async (req, res) => {
         { new: true }
       )
       const productdata = await Product.findOneAndUpdate(
-        {_id:productId},
-        { $inc: { stock: 1 }},
-    )
-    await productdata.save()
-    console.log(productId);
-      }
+        { _id: productId },
+        { $inc: { stock: 1 } },
+      )
+      await productdata.save()
+      console.log(productId);
+      res.send('success')
+    }
   } catch (error) {
     console.log(error.message);
   }
@@ -773,81 +796,13 @@ const updatepassword = async (req, res) => {
     console.log(error.message);
   }
 }
-// const cancelorder = async (req, res) => {
-//   try {
-//     console.log("😘🤣");
-//     const userId = req.session.user_id
-//     const orderId = req.params.orderId;
 
-//     const order = await Orders.findOneAndUpdate(
-//       { _id: orderId },
-//       { $set: { canceled: true } },
-//       { new: true }
-//     )
-//     const orderproducts = order.items
-//     console.log("👌👌👌👌👌" + orderproducts[0].quantity);
-//     let productdatabase; 
-
-//     for (const product of orderproducts) {
-//       if (!productdatabase) {
-//         const initialProduct = await Product.findById(product.prodId);
-//         productdatabase = { stock: initialProduct.stock };
-//       }
-  
-//       productdatabase = await Product.findOneAndUpdate(
-//         { _id: product.prodId },
-//         { $set: { stock: productdatabase.stock + product.quantity } }
-//       );
-  
-//       console.log(product.quantity, "😜🙌", productdatabase.stock);
-//     }
-//     if (!order) {
-//       console.log("Order not found");
-//       return res.status(404).json({ error: 'Order not found' });
-//     }
-//     // stock refund happening hrer
-//     // const cart = await Cart.find
-
-//     // money refund happening here
-//     if (order.PaymentMethod === "Razorpay") {
-//       console.log(order.PaymentMethod);
-
-//       const walletexist = await Wallet.findOne({ user_id: req.session.user_id });
-//       console.log("Order totalprice:", order.totalprice);
-//       console.log("Existing Wallet:", walletexist ? walletexist.walletBalance : 'Wallet not found');
-
-//       if (!walletexist) {
-//         const wallet = new Wallet({
-//           user_id: req.session.user_id,
-//           walletBalance: order.totalprice
-          
-//         });
-//         await wallet.save(); 
-//       } else {
-//         walletexist.walletBalance = new Decimal(walletexist.walletBalance).plus(order.totalprice).toNumber();
-//         await walletexist.save();
-//       }
-//       const walletHistoryDebit = new WalletHistory({
-//         user_id: userId,
-//         Balance: walletexist.walletBalance,
-//         amount: order.totalprice,
-//         status: "Credit",
-//       });
-//       await walletHistoryDebit.save();
-//     }
-
-//     res.status(200).json({ message: 'Order cancelled successfully' });
-//   } catch (error) {
-//     console.log(error.message);
-//     res.status(500).json({ error: error.message }); // Handle errors properly
-//   }
-// };
 const cancelorder = async (req, res) => {
   try {
     console.log("cancel order🤦‍♀️❤️");
     const userId = req.session.user_id
     const orderId = req.params.orderId;
-    console.log("👌👌👌👌👌" + orderId);
+    console.log(req.session.user_id,"👌👌👌👌👌" + orderId);
 
     const order = await Orders.findOneAndUpdate(
       { _id: orderId },
@@ -861,8 +816,8 @@ const cancelorder = async (req, res) => {
     }
 
     // Correct the case when accessing paymentMethod
-    if (order.PaymentMethod === "Razorpay") {
-      console.log(order.PaymentMethod);
+    if (order.PaymentMethod === "Razorpay" || order.PaymentMethod === "Wallet") {
+      console.log("💖payment method",order.PaymentMethod);
 
       const walletexist = await Wallet.findOne({ user_id: req.session.user_id });
       console.log("Order totalprice:", order.totalprice);
@@ -928,14 +883,14 @@ const returnproduct = async (req, res) => {
   const orderId = req.params.orderId
   const itemId = req.params.itemId
   const orderdata = await Orders.findById(orderId)
-  console.log('😍😍😍😍😍',orderdata);
+  console.log('😍😍😍😍😍', orderdata);
   try {
     const updatedOrder = await Orders.findOneAndUpdate(
       { _id: orderId, 'items._id': itemId },
       { $set: { 'items.$.return': false } },
       { new: true }
     );
-    
+
     await updatedOrder.save()
 
     if (updatedOrder) {
@@ -958,29 +913,14 @@ const deleteaddress = async (req, res) => {
   console.log("💕💕💕💕");
   res.redirect('/userprofile')
 }
-// const allproducts = async (req, res) => {
-//     try {
-//       let totalpages = 9
-//       const products = await Product.find({})
-//       const categories = await Category.find({})
-//       const offers = await Offer.find();
 
-//       res.render('allproducts',{categories,offers,products,totalpages})
-//     } catch (error) {
-//       console.error('Error searching products:', error);
-//       res.status(500).send('Internal Server Error');
-//     }
-//   };
-  
 const allproducts = async (req, res) => {
   try {
-    const productsdata = await Product.find({})
-    const categories = await Category.find({})
+    const productsdata = await Product.find({});
+    const categories = await Category.find({ active: true }); // Fetch active categories
     const offers = await Offer.find();
     const searchTerm = req.query.search;
-    console.log(searchTerm);
-    const categoryFilter = req.query.category; 
-    console.log(searchTerm, categoryFilter);
+    const categoryFilter = req.query.category;
 
     let page = 1;
     const limit = 3;
@@ -997,6 +937,9 @@ const allproducts = async (req, res) => {
     if (categoryFilter) {
       baseQuery.category = categoryFilter;
     }
+
+    // Add the condition to filter by the "active" field in the "Category" model
+    // baseQuery['category.active'] = false;
 
     if (searchTerm || categoryFilter) {
       products = await Product.find(baseQuery).exec();
@@ -1029,12 +972,12 @@ const allproducts = async (req, res) => {
   }
 };
 
-const wallethistory = async(req,res)=>{
+const wallethistory = async (req, res) => {
   try {
     const ui = req.session.user_id
-    const wallethistory = await WalletHistory.find({user_id:ui}).sort({createdAt:-1})
+    const wallethistory = await WalletHistory.find({ user_id: ui }).sort({ createdAt: -1 })
     console.log(wallethistory);
-    res.render('wallethistory',{wallethistory:wallethistory})
+    res.render('wallethistory', { wallethistory: wallethistory })
   } catch (error) {
     console.log(error);
   }
@@ -1048,34 +991,34 @@ const wallethistory = async(req,res)=>{
 
 const checkcoupon = async (req, res) => {
   try {
-      console.log("👍👍👍👍👍👍");
-      console.log(req.body.couponCode);
-      const coupon = await Coupon.findOne({ couponCode: req.body.couponCode });
+    console.log("👍👍👍👍👍👍");
+    console.log(req.body.couponCode);
+    const coupon = await Coupon.findOne({ couponCode: req.body.couponCode });
 
-      if (coupon && coupon.active) {
-          console.log("yes, it's there and active");
-          // Assuming you want to set active to false when the coupon is applied
-          await Coupon.findByIdAndUpdate(coupon._id, { $set: { active: false } });
+    if (coupon && coupon.active) {
+      console.log("yes, it's there and active");
+      // Assuming you want to set active to false when the coupon is applied
+      await Coupon.findByIdAndUpdate(coupon._id, { $set: { active: false } });
 
-          res.json({ valid: true, discountPercentage: coupon.discountPercentage ,  message: 'Coupon applied successfully' , messageColor: 'green' });
-          console.log(coupon.discountPercentage);
-          
-      } else if (coupon && !coupon.active) {
-          console.log("it's there but not active");
-          res.json({ valid: false, message: 'Coupon is has been already used' });
-      } else {
-          console.log("it's not there");
-          res.json({ valid: false, message: 'Coupon not found' });
-      }
+      res.json({ valid: true, discountPercentage: coupon.discountPercentage, message: 'Coupon applied successfully', messageColor: 'green' });
+      console.log(coupon.discountPercentage);
+
+    } else if (coupon && !coupon.active) {
+      console.log("it's there but not active");
+      res.json({ valid: false, message: 'Coupon is has been already used' });
+    } else {
+      console.log("it's not there");
+      res.json({ valid: false, message: 'Coupon not found' });
+    }
   } catch (error) {
-      console.error(error);
-      res.status(500).json({ valid: false, error: 'Internal Server Error' });
+    console.error(error);
+    res.status(500).json({ valid: false, error: 'Internal Server Error' });
   }
 };
 async function creditmoneyonreferal(data, id) {
   try {
     const useri = await User.findById(id);
-    console.log(id,"🤣🤣🤣");
+    console.log(id, "🤣🤣🤣");
 
     console.log(data);
     const refereduser = await User.findOne({ username: data });
@@ -1087,7 +1030,7 @@ async function creditmoneyonreferal(data, id) {
       await creditto.save();
 
       const walletHistoryDebit = new WalletHistory({
-        user_id: useri._id, 
+        user_id: useri._id,
         Balance: creditto.walletBalance,
         amount: "50",
         status: "Credit",
@@ -1130,6 +1073,7 @@ module.exports = {
   usermgt,
   extractusermgt,
   showaddress,
+  showaddress1,
   saveaddress,
   ordersummary,
   extractcheckout,
@@ -1147,6 +1091,6 @@ module.exports = {
   wallethistory,
   checkusername,
   returnproduct
-  
+
 
 };
