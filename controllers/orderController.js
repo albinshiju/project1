@@ -80,8 +80,8 @@ const approveorder = async (req, res) => {
 
     const priceToCredit = itemToUpdate.offerprice > 0 ? itemToUpdate.offerprice : itemToUpdate.price;
     console.log(typeof priceToCredit,"😍💖");
-    // itemToUpdate.return = true;
-    // itemToUpdate.returnApproval = true;
+    itemToUpdate.return = true;
+    itemToUpdate.returnApproval = true;
 
     // Save the changes to the order
     await order.save();

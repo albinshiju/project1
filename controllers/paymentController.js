@@ -8,6 +8,7 @@ const razorpayInstance = new Razorpay({
 })
 
 const createOrder = async(req,res)=>{
+  console.log("💖create order");
     try {
         const orderId = req.body.orderId;
         console.log(orderId);
@@ -45,6 +46,8 @@ const createOrder = async(req,res)=>{
 }
 
 const verifypayment = async(req,res)=>{
+  console.log("💖verify payment");
+
     try {
         console.log(req.body, "Success of order 📀📀📀📀📀📀😁😁❤❤");
         const orderId = req.body.orderId;

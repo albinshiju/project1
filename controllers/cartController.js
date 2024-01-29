@@ -98,11 +98,6 @@ const addtocart = async (req, res) => {
       console.log("🙌🙌🙌", productstock.stock);
 
       if (productstock.stock > 0) {
-        await Product.updateOne(
-          { _id: productId },
-          { $inc: { stock: -1 } }
-        );
-        await productstock.save();
 
         if (product) {
           const subtotals = product.items.map((item) => {
@@ -111,7 +106,6 @@ const addtocart = async (req, res) => {
               subtotal: item.product.price * item.quantity,
             };
           });
-
 
           const subtotalPrices = subtotals.map((item) => item.subtotal);
           console.log(subtotalPrices);
@@ -126,8 +120,10 @@ const addtocart = async (req, res) => {
           );
 
           if (existingCartItem) {
-            existingCartItem.quantity += 1;
+            // If the product already exists in the cart, send failure response
+            return res.send({ success: false });
           } else {
+            // If the product doesn't exist in the cart, add it
             cart.items.push({ product: productId, quantity: 1 });
           }
 
@@ -135,9 +131,10 @@ const addtocart = async (req, res) => {
 
           await cart.save();
           // res.redirect('/')
-
+          res.send({ success: true });
 
         } else {
+          // If there is no cart for the user, create a new cart
           const newCart = new Cart({
             user: userId,
             items: [{ product: productId, quantity: 1 }],
@@ -145,13 +142,11 @@ const addtocart = async (req, res) => {
           });
 
           await newCart.save();
-
         }
 
       } else {
+        res.send({ success: false });
         console.log("Stock is already at 0. Cannot decrement further.");
-        
-
       }
     }
   } catch (error) {
@@ -161,8 +156,27 @@ const addtocart = async (req, res) => {
 };
 
 
+const cartOperation2 = async (req, res) => {
+  try {
+    const qty = parseInt(req.body.qty, 10); // Using parseInt with base 10
+    const productid = req.body.productId
+    const data = await Product.findById(productid)
+    console.log(data);
+    if(data.stock>qty){
+      console.log("34😍,",req.body.qty);
+      res.send({ success: true });
+
+    }else{
+      res.send({ success: false });
+
+    }
+  } catch (error) {
+    
+  }
+}
 const cartOperation = async (req, res) => {
   try {
+    console.log("cart operation🥳")
     const offer = await Offer.find({})
     const userId = req.session.user_id;
     const { productId, quantity, totalPrice, dosomething } = req.body;
@@ -176,10 +190,10 @@ const cartOperation = async (req, res) => {
     if (productstock) {
       const stockChange = dosomethingvalue ? 1 : -1;//ternary
       if (productstock.stock > 0) {
-      await Product.updateOne(
-        { _id: productId },
-        { $inc: { stock: stockChange } }
-      );
+      // await Product.updateOne(
+      //   { _id: productId },
+      //   { $inc: { stock: stockChange } }
+      // );
       console.log(`😜 ${dosomethingvalue ? 'Decreased' : 'Increased'} stock by ${Math.abs(stockChange)}`);
       const cart = await Cart.findOneAndUpdate(
         { user: userId, "items.product": productId },
@@ -215,7 +229,7 @@ const cartOperation = async (req, res) => {
         });
       }
       res.json({
-        success: true,
+        success: false,
         message: "Cart updated successfully",
         subtotal: subtotals,
       });
@@ -291,6 +305,8 @@ module.exports = {
 
   getTotalAmount,
   cartOperation,
+  cartOperation2,
+
   checkoutpage,
 
 

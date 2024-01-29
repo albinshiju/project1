@@ -78,7 +78,7 @@ user_route.post('/forget-password',isBlocked.blockChecker,userController.resetpa
 user_route.get('/editprofile',isBlocked.blockChecker,userController.editUserLoad)
 user_route.post('/editprofile',isBlocked.blockChecker,userController.extracteditUserLoad)
 user_route.get('/changepassword',isBlocked.blockChecker,userController.changepassword)
-user_route.post('/checkout-address',isBlocked.blockChecker, userController.checkoutAjaxAddress)
+user_route.post('/checkout-address',isBlocked.blockChecker, userController.checkaddress)
 user_route.get('/addressmgt',isBlocked.blockChecker,userController.usermgt)
 user_route.post('/addressmgt',isBlocked.blockChecker,userController.extractusermgt)
 user_route.get('/showaddress',isBlocked.blockChecker,userController.showaddress)
@@ -99,13 +99,15 @@ user_route.get('/allproducts',isBlocked.blockChecker, userController.allproducts
 /* cartttt */
 user_route.get('/cart',isBlocked.blockChecker,cartController.cart)
 user_route.post('/cart/updateqty',isBlocked.blockChecker,cartController.cartOperation);
+user_route.post('/cart/updateqtyverification',isBlocked.blockChecker,cartController.cartOperation2);
+
 user_route.get('/cart/checkout',isBlocked.blockChecker,cartController.checkoutpage)
 // wishlist
 user_route.get('/removeproductwishlist/:id',isBlocked.blockChecker,wishlistController.remove)
 
 user_route.get('/download-invoice/:id',isBlocked.blockChecker,invoiceController.downloadinvoice)
 
-
+// user_route.post('/checkout-razorpay',isBlocked.blockChecker, userController.checkrazorpay)
 
 user_route.post('/addToWishlist/:productId',auth.isLogin,noCache(),wishlistController.addToWishlist);
 user_route.get('/wishlist',auth.isLogin,noCache(),wishlistController.wishlist);
@@ -118,7 +120,7 @@ user_route.post('/verifypayment',isBlocked.blockChecker,paymentController.verify
 
 user_route.get(`/sortProducts`,isBlocked.blockChecker,productController.sortProducts)
 
-user_route.get("/cart/addtocart/:id",isBlocked.blockChecker,cartController.addtocart)
+user_route.post("/cart/addtocart/:id",isBlocked.blockChecker,cartController.addtocart)
 // user_route.get('/addtocart',isBlocked.blockChecker,cartController.addtocart)
 user_route.post('/cart/cancelorder/:orderId',isBlocked.blockChecker,userController.cancelorder)
 user_route.post('/cart/returnproductseperate/:orderId/:itemId',isBlocked.blockChecker,userController.returnproduct)
@@ -143,6 +145,7 @@ user_route.get('/prdetails',isBlocked.blockChecker, productController.prdetails)
 
 
 user_route.get('/canceledorders',orderController.canceledorder)
+user_route.get('/errorpage',productController.errorpage)
 
 
 

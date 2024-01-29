@@ -85,7 +85,6 @@ admin_route.get('/',noCache(),adminAuth.isLogin,adminController.loadhome)
 admin_route.get('/register',adminAuth.isLogout,adminController.adminloadregister)
 admin_route.post('/register',upload.single('image'),adminController.insertadmin)
 
-
 admin_route.get('/login', noCache(), adminAuth.isLogout, adminController.loadLogin);
 admin_route.post('/login', noCache(),adminController.verifyLogin);
 
@@ -162,6 +161,8 @@ admin_route.post('/cropimage',adminAuth.isLogin, adminController.sharpcrop);
 // admin_route.get('*',(req,res)=>{
 //     res.redirect('/admin')
 // })
+// admin_route.get('/*',productController.errorpage)
+
 
 
 

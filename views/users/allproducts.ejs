@@ -120,16 +120,13 @@
                         <p class="mb-2"></p>
                         <!-- Update your HTML -->
                         <div class="list-group">
-                            <li class="list-group-item list-group-item-action mb-2 rounded">
-                                <a href="/allproducts?category=6569645864c72c65377cbd6a">Mobile</a>
-                            </li>
-                            <li class="list-group-item list-group-item-action mb-2 rounded">
-                                <a href="/allproducts?category=656ccfdd2aa6379794e2b966">CAMERA</a>
-                            </li>
-                            <li class="list-group-item list-group-item-action mb-2 rounded">
-                                <a href="/allproducts?category=656ccfe72aa6379794e2b96a">Laptops</a>
-                            </li>
+                            <% categories.forEach(function(category) { %>
+                                <li class="list-group-item list-group-item-action mb-2 rounded">
+                                    <a href="/allproducts?category=<%= category._id %>"><%= category.categoryName %></a>
+                                </li>
+                            <% }); %>
                         </div>
+                        
 
                     </div>
 
@@ -155,8 +152,8 @@
                                                 <%= product.name %>
                                             </h6>
                                             <% if (product.stock> 0) { %>
-                                                <a href="/cart/addtocart/<%=product._id %>" onclick="productAdd()"
-                                                    class="add-cart" style="color: #3685da;">+ Add To Cart</a>
+                                                <a href="#" onclick="addToCart('<%= product._id %>')" class="add-cart" style="color: #3685da;">+ Add To Cart</a>
+
                                                 <% } else { %>
                                                     <a class="add-cart" style="color:rgb(199, 12, 12)">Out Of Stock</a>
                                                     <% } %>
@@ -168,15 +165,20 @@
                                             <i class="fa fa-star-o"></i>
                                         </div> -->
                                                         <!-- 🙌code for category offer -->
-                                                        <% const productOffer=offers.find(offer=>
-                                                            offer.category.equals(product.category)) %>
-                                                            <span class="badge badge-info"> discount:
-                                                                ₹<%= productOffer ? `${product.price -
-                                                                    (productOffer.percentage * product.price) / 100}` :
-                                                                    `No Offer` %>
-                                                            </span>
-                                                            <h5>₹<%= product.price %>
-                                                            </h5>
+                                                        <% const productOffer = offers.find(offer =>
+                                                        offer.category.equals(product.category)) %>
+                                                    
+                                                    <% if (productOffer) { %>
+                                                        <!-- Display with discount and crossed original price -->
+                                                        <span class="badge badge-info" style="font-size: 16px;"> 
+                                                            ₹<%= product.price - (productOffer.percentage * product.price) / 100 %>
+                                                        </span>
+                                                        <h5 style="text-decoration: line-through;">₹<%= product.price %></h5>
+                                                    <% } else { %>
+                                                        <!-- Display only original price if there's no offer -->
+                                                        <h5>₹<%= product.price %></h5>
+                                                    <% } %>
+                                                    
 
                                                             <button class="like-btn"
                                                                 onclick="likeProduct('<%= product._id %>')"> <i
@@ -214,15 +216,55 @@
                     <%- include('../layouts/footer.ejs') %>
 
                         <script>
-                            function productAdd(e) {
-                                Swal.fire({
-                                    position: "center",
-                                    icon: "success",
-                                    title: "Product Added to cart",
-                                    showConfirmButton: false,
-                                    timer: 1500
-                                });
-                            }
+                            function addToCart(productId) {
+                                console.log(productId);
+    // Make an AJAX request to add the product to the cart
+    $.ajax({
+         url: `/cart/addtocart/${productId}`,
+    type: 'POST',
+    contentType: 'application/json',
+    data: JSON.stringify({
+        productId: productId,
+    }),
+        success: function (data) {
+            console.log(data, "data❤️");
+
+            // Check if the server response indicates success
+            if (data.success) {
+                // Display a success message with SweetAlert2
+                Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: "Product Added to Cart",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            } else {
+                // Display an error message with SweetAlert2
+                Swal.fire({
+                    position: "center",
+                    icon: "error",
+                    title: "Product Already Added",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        },
+        error: function (error) {
+            console.error('AJAX error:', error);
+
+            // Display an error message with SweetAlert2
+            Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "Failed to add product to Cart",
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+    });
+}
+
                             
                             function likeProduct(productId) {
     $.ajax({

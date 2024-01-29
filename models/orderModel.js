@@ -126,7 +126,11 @@ const orderSchema = new Schema({
     createdAt: {
         type: Date,
         default: Date.now,
-    }
+    },
+    orderPlaced: {
+        type: Boolean,
+        default: false
+    },
 });
 
 const Orders = mongoose.model('Orders', orderSchema);

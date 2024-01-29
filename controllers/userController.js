@@ -516,7 +516,6 @@ const saveaddress = async (req, res) => {
 }
 const ordersummary = async (req, res) => {
   try {
-    console.log("💖order summary");
     const addressIndex = req.body.selectedAddress;
     const orderTotal = req.body.orderTotal;
     const payment = req.body.payment;
@@ -588,8 +587,96 @@ const changepassword = async (req, res) => {
   }
 }
 
+const checkrazorpay = async (req, res) => {
+}
+// const checkaddress = async (req, res) => {
+//   try {
+//     const addressIndex = req.body.selectedAddress;
+//     const orderTotal = req.body.orderTotal;
+//     const payment = req.body.payment;
+//     const userId = req.session.user_id;
+//     const cart = await Cart.findOne({ user: userId }).populate("items.product");
+//     const addressSchema = await Address.findOne({ userId: userId });
 
-const checkoutAjaxAddress = async (req, res) => {
+//     if (!cart) {
+//       console.log("Cart is not available");
+//       return res.status(400).send("Cart not available");
+//     }
+
+//     const index = addressSchema.address[addressIndex];
+
+//     const items = cart.items.map((item) => ({
+//       name: item.product.name,
+//       price: item.product.price,
+//       prodId: item.product._id,
+//       image: item.product.images[0],
+//       quantity: item.quantity,
+//       category: item.product.category,
+//       subtotal: item.quantity * item.product.price,
+//     }));
+
+//     // Fetch offers based on product categories
+//     const categoryIds = items.map((item) => item.category);
+//     const data = await Offer.find({ category: { $in: categoryIds } });
+
+//     // Calculate offer price for each item
+//     const itemsWithOffer = items.map((item) => {
+//       const matchingOffer = data.find((offer) => offer.category.equals(item.category));
+//       if (matchingOffer) {
+//         // Apply offer percentage to calculate the discounted price
+//         const discountedPrice = item.price - (item.price * matchingOffer.percentage / 100);
+//         return {
+//           ...item,
+//           offerprice: discountedPrice,
+//           offersubtotal: discountedPrice * item.quantity,
+//         };
+//       }
+//       return item; // No offer for this category, keep the original price
+//     });
+
+//     const orderSave = new Orders({
+//       userId: userId,
+//       items: itemsWithOffer, // Use the updated items array with offer prices
+//       address: index,
+//       totalprice: orderTotal,
+//       PaymentMethod: payment,
+//       paymentStatus: 'pending', // Adjust as needed
+//       deliveryStatus: 'pending', // Adjust as needed
+//       orderStatus: 'pending',
+//     });
+
+//     await orderSave.save();
+//     await deductFromWallet(userId, orderTotal);
+//     // await Cart.findOneAndDelete({ user: userId });
+
+//     const newOrder = orderSave._id;
+
+//     // Handle different payment methods
+//     if (orderSave.PaymentMethod === 'COD') {
+//       const codSuccess = true;
+//       res.send({ codSuccess, id: newOrder });
+//     } else if (orderSave.PaymentMethod === 'Razorpay') {
+//       const razorpaySuccess = true;
+//       res.send({ razorpaySuccess, id: newOrder });
+//     } else if (orderSave.PaymentMethod === 'Wallet') {
+//       const wallet = await Wallet.findOne({ user_id: userId });
+
+//       if (wallet.walletBalance === 0) {
+//         res.send({ walletSuccess: false, id: newOrder });
+//       } else {
+//         const walletSuccess = true;
+//         res.send({ walletSuccess, id: newOrder });
+//       }
+//     } else {
+//       console.log("Error Ajax 😒😒😒😒😒😒😒😒😒😒😒😒😒😒");
+//     }
+//   } catch (error) {
+//     console.log('Try catch error in checkoutAjaxAddress 🤷‍♂️📀🤷‍♀️');
+//     console.log(error.message);
+//     res.status(500).send('Internal Server Error');
+//   }
+// };
+const checkaddress = async (req, res) => {
   try {
     const addressIndex = req.body.selectedAddress;
     const orderTotal = req.body.orderTotal;
@@ -646,8 +733,8 @@ const checkoutAjaxAddress = async (req, res) => {
     });
 
     await orderSave.save();
-    await deductFromWallet(userId, orderTotal);
-    await Cart.findOneAndDelete({ user: userId });
+    // await deductFromWallet(userId, orderTotal);
+    // await Cart.findOneAndDelete({ user: userId });
 
     const newOrder = orderSave._id;
 
@@ -674,6 +761,48 @@ const checkoutAjaxAddress = async (req, res) => {
     console.log('Try catch error in checkoutAjaxAddress 🤷‍♂️📀🤷‍♀️');
     console.log(error.message);
     res.status(500).send('Internal Server Error');
+  }
+};
+const placeorder = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const userId = req.session.user_id;
+
+    // Update order status to 'orderPlaced'
+    const data = await Orders.findOneAndUpdate(
+      { _id: id },
+      { $set: { orderPlaced: true } },
+      { new: true }
+    );
+    data.save();
+
+    // Delete items from the user's cart
+    await Cart.findOneAndDelete({ user: userId });
+
+    // Iterate through the items in the order and update product stock
+    for (const item of data.items) {
+      const productId = item.prodId;
+      const quantity = item.quantity;
+
+      // Find the product using the productId
+      const product = await Product.findOne({ _id: productId });
+
+      // Update the product stock
+      if (product) {
+        product.stock -= quantity;
+        await product.save();
+      }
+    }
+
+    // Deduct the order total from the user's wallet
+    const orderTotal = data.totalprice;
+    await deductFromWallet(userId, orderTotal);
+
+    // Render the place order page with order details
+    res.render('placeorder', { details: data });
+  } catch (error) {
+    console.log(error.message);
+    res.json("error");
   }
 };
 
@@ -705,24 +834,6 @@ const deductFromWallet = async (userId, orderTotal) => {
   }
 };
 
-const placeorder = async (req, res) => {
-  try {
-
-    const id = req.params.id;
-
-    const newOrder = await Orders.findOne({ _id: id });
-
-    if (newOrder) {
-      res.render('placeorder', { details: newOrder })
-    } else {
-      res.json("error")
-    }
-
-    // res.render('')
-  } catch (error) {
-    console.log(error.message);
-  }
-}
 
 const checkoutaddress = async (req, res) => {
   console.log("hi");
@@ -733,7 +844,7 @@ const checkusername = async (req, res) => {
 const showorders = async (req, res) => {
   const id = req.session.user_id
   const offers = await Offer.find({})
-  const orders = await Orders.find({ userId: id, canceled: false }).sort({ createdAt: -1 })
+  const orders = await Orders.find({ userId: id, canceled: false ,orderPlaced:true}).sort({ createdAt: -1 })
   // console.log(orders);
   const returnorder = await Return.find({})
   // console.log("🤣",returnorder);
@@ -756,11 +867,11 @@ const cartremove = async (req, res) => {
         { $pull: { items: { product: productId } } },
         { new: true }
       )
-      const productdata = await Product.findOneAndUpdate(
-        { _id: productId },
-        { $inc: { stock: 1 } },
-      )
-      await productdata.save()
+      // const productdata = await Product.findOneAndUpdate(
+      //   { _id: productId },
+      //   { $inc: { stock: 1 } },
+      // )
+      // await productdata.save()
       console.log(productId);
       res.send('success')
     }
@@ -1078,7 +1189,7 @@ module.exports = {
   ordersummary,
   extractcheckout,
   changepassword,
-  checkoutAjaxAddress,
+  checkaddress,
   placeorder,
   checkoutaddress,
   showorders,

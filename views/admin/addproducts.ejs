@@ -1,5 +1,6 @@
 <%- include('navbarMobile.ejs') %>
 
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -108,6 +109,8 @@
     
     
 </body>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
 <script>
     function productValidation() {
     var productNameInput = document.getElementById('productname');
@@ -145,38 +148,44 @@
 
 
 
-    document.addEventListener('DOMContentLoaded', function() {
-        // Get the file input element
-        const fileInput = document.getElementById('images');
-    
-        // Add an event listener to the file input for the 'change' event
-        fileInput.addEventListener('change', function() {
-            // Get the container where you want to display the images
-            const imagePreview = document.getElementById('imagePreview');
-    
-            // Clear the previous content
-            imagePreview.innerHTML = '';
-    
-            // Loop through the selected files and create image elements
-            for (const file of fileInput.files) {
-                const image = document.createElement('img');
-                image.src = URL.createObjectURL(file);
-                image.className = 'img-thumbnail';
-                imagePreview.appendChild(image);
-            }
-        });
-        const productNameInput = document.getElementById('productname');
-    
-    // Add an event listener to the input for the 'input' event
-    productNameInput.addEventListener('input', function() {
-        // Get the entered value
-        const productNameValue = productNameInput.value;
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('images');
+    const imagePreview = document.getElementById('imagePreview');
 
-        // Log the value to the console
-        console.log('Product Name:', productNameValue);
-    });
-    });
+    // Add an event listener to the file input for the 'change' event
+    fileInput.addEventListener('change', function() {
+        // Clear the previous content
+        imagePreview.innerHTML = '';
 
+        // Loop through the selected files and create image elements
+        for (const file of fileInput.files) {
+            const imageContainer = document.createElement('div');
+            const image = document.createElement('img');
+            const deleteButton = document.createElement('button');
+
+            // Set image source and class
+            image.src = URL.createObjectURL(file);
+            image.className = 'img-thumbnail';
+
+            // Set delete button properties
+            deleteButton.textContent = 'Delete';
+            deleteButton.className = 'btn btn-danger btn-sm ml-2';
+            
+            // Add an event listener to the delete button for the 'click' event
+            deleteButton.addEventListener('click', function() {
+                // Remove the image container when the delete button is clicked
+                imageContainer.remove();
+            });
+
+            // Append image and delete button to the container
+            imageContainer.appendChild(image);
+            imageContainer.appendChild(deleteButton);
+
+            // Append the container to the imagePreview div
+            imagePreview.appendChild(imageContainer);
+        }
+    });
+});
     
 
 

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Return Approval Page</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        table {
+          border-collapse: collapse;
+          width: 100%;
+        }
+    
+        th, td {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+        }
+    
+        th {
+          background-color: #f2f2f2;
+        }
+
+        .is-title-bar {
+          color: #ffffff;
+          padding: 10px;
+        }
+
+
+      </style>
+</head>
+<body>
+    <%- include('sidebar.ejs') %>
+
+    <section class="is-title-bar">
+        <div class="flex flex-col md:flex-row items-center justify-between space-y-6 md:space-y-0">
+          <ul>
+            <li>Admin</li>
+            <li>Offer Management</li>
+            
+          </ul>
+         
+        </div>
+
+        
+      </section>
+
+    <table class="table">
+        <thead class="thead-light">
+          <tr>
+            <th>Order ID</th>
+            <th>Reason</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+            <% returned.forEach(items => { %>
+              <tr>
+                <td><%= items.orderno %></td>
+                <td><%= items.reason %></td>
+                <td><a href="#" value="<%= items.orderno %>"  class="btn btn-primary approve-btn">Approve</a></td>
+              </tr>
+            <% }) %>
+        </tbody>
+    </table>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var approveButtons = document.getElementsByClassName('approve-btn');
+
+    Array.from(approveButtons).forEach(function (button) {
+        button.addEventListener('click', function (event) {
+            event.preventDefault();
+            console.log("approve button clicked");
+            var orderNumber = button.getAttribute('value');
+            console.log(orderNumber);
+
+            fetch(`/admin/approveOrder/${orderNumber}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ orderno: orderNumber }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                  console.log("hello");
+                    // Handle the response from the server
+                    console.log(data);
+                    // You can update the UI or take any necessary actions here
+                    if (data.success) {
+                        // Find the table row corresponding to the approved order
+                        var tableRow = document.querySelector(`[value="${orderNumber}"]`).closest('tr');
+                      console.log("row reached");
+                        // Remove the table row from the DOM
+                        tableRow.remove();
+                    } else {
+                        console.error('Failed to approve order.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+    });
+});
+
+</script>
+
+
+</body>
+</html>

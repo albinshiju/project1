@@ -333,11 +333,12 @@ const sortProducts = async (req, res) => {
 
 }
 
-const removeimage = async (req, res) => {
+const  removeimage = async (req, res) => {
     try {
+        console.log("remove image💖",req.body);
         const imageIndex = req.query.imageIndex;
         const productId = req.query.productId;
-
+        console.log(imageIndex,"🤣");
         const product = await Product.findById(productId);
 
         if (!product) {
@@ -365,7 +366,6 @@ const removeimage = async (req, res) => {
     }
 };
 
-module.exports = { removeimage };
 
 const prdetails = async (req, res) => {
 
@@ -381,6 +381,14 @@ const prdetails = async (req, res) => {
         } else {
             console.log(error.message);
         }
+    } catch (error) {
+        console.log(error.message);
+    }
+};
+const errorpage = async (req, res) => {
+
+    try {
+        res.render('errorpage')
     } catch (error) {
         console.log(error.message);
     }
@@ -415,5 +423,6 @@ module.exports = {
     editproduct,
     sortProducts,
     removeimage,
-    prdetails
+    prdetails,
+    errorpage
 }

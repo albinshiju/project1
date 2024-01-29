@@ -449,46 +449,58 @@ const salesreport = async(req,res)=>{
     }
 }
 
-const postsalesreport = async(req,res)=>{
+const postsalesreport = async (req, res) => {
     try {
         console.log("postsalesreport");
-        // const start = '2023-11-20'
-        // const end = '2023-11-26'
-        const start = req.body.startDate
-        const end = req.body.expirationDate
-        console.log(start,end);
+
+        let start = req.body.startDate;
+        let end = req.body.expirationDate;
+        console.log(start, end);
+
+        // If start and end dates are the same, increment end date by a day
+        if (start === end) {
+            const endDate = new Date(end);
+            endDate.setDate(endDate.getDate() + 1);
+            end = endDate.toISOString();
+        }
+
         const orders = await Orders.find({
-            createdAt:{
-                $gte:new Date(start),
-                $lte:new Date(end),
-            }
-        })
-        const alldata = []
-        
-        orders.forEach((order)=>{
-            order.items.forEach((item)=>{
+            createdAt: {
+                $gte: new Date(start),
+                $lte: new Date(end),
+            },
+            orderStatus: 'Delivered', // Filter by 'Delivered' status
+        });
+
+        const alldata = [];
+
+        orders.forEach((order) => {
+            order.items.forEach((item) => {
                 alldata.push({
                     productName: item.name,
                     productPrice: item.price * item.quantity,
-                    totalprice:order.totalprice,
-                    orderid:order._id,
-                    quantity:item.quantity,
-                    unitprice:item.price,
-                    image:item.image,
-                    paymentMethod:order.PaymentMethod,
-                    date:order.createdAt.toLocaleDateString()
-                })
-            })
-        })
+                    totalprice: order.totalprice,
+                    orderid: order._id,
+                    quantity: item.quantity,
+                    unitprice: item.price,
+                    image: item.image,
+                    paymentMethod: order.PaymentMethod,
+                    date: order.createdAt.toLocaleDateString(),
+                });
+            });
+        });
+
         console.log(alldata);
         console.log(orders.totalprice);
-        res.json({alldata})
-
-
+        res.json({ alldata });
     } catch (error) {
-        
+        // Handle errors appropriately
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
-}
+};
+
+
 const adminabout = async(req,res)=>{
     const usersData = await Admin.findById({ _id: req.session.admin_id })
 
