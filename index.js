@@ -3,12 +3,12 @@ const mongoose = require('mongoose')
 require("dotenv").config();
 const { MONGO_URL} = process.env;
 
-// mongoose.connect(MONGO_URL).then(
-//     console.log("database connected")
-// ).catch(error=>{
-//     console.log("database error",error);
-// })
-mongoose.connect("mongodb://127.0.0.1:27017/user_management_system")
+mongoose.connect(MONGO_URL).then(
+    console.log("database connected")
+).catch(error=>{
+    console.log("database error",error);
+})
+// mongoose.connect("mongodb://127.0.0.1:27017/user_management_system")
 const express =  require('express')
 const app = express()
 var hello = 1
