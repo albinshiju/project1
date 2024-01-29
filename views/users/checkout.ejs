@@ -285,7 +285,9 @@
         document.getElementById('pay-order').innerHTML = "<p class='btn btn-success' id='pay-now'>Pay Now </p>";
         document.getElementById('place-order-address-button').innerHTML = "";
         document.getElementById('place-order-address-button').classList.remove('btn-black');
-        // document.getElementById('order-id').innerHTML = response.id;
+        document.getElementById('order-id').innerHTML = response.id;
+        document.getElementById('order-id').style.display = 'none';
+
     } else if (response.walletSuccess) {  
         console.log("Wallet Success");
         document.getElementById('place-Checkout').innerHTML = '<a href="/place-order/' + response.id + '"><button class="btn btn-black btn-lg py-3 btn-block" type="submit">Place Order</button></a>';
