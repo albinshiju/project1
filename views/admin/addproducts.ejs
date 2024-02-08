@@ -89,10 +89,7 @@
     
             <div class="form-group">
                 <label for="">Add Images</label>
-
-                <div id="imagePreview" class="mt-3" style="width: 100px; height: 100px; display: flex;"></div>
-
-
+                <div id="imagePreview" class="mt-3" style="display: flex; flex-wrap: wrap;"></div>
                 <input type="file" class="form-control-file" id="images" name="images" multiple required>
                 <br>
             </div>
@@ -148,48 +145,27 @@
 
 
 
-document.addEventListener('DOMContentLoaded', function() {
-    const fileInput = document.getElementById('images');
-    const imagePreview = document.getElementById('imagePreview');
-
-    // Add an event listener to the file input for the 'change' event
-    fileInput.addEventListener('change', function() {
-        // Clear the previous content
-        imagePreview.innerHTML = '';
-
-        // Loop through the selected files and create image elements
-        for (const file of fileInput.files) {
-            const imageContainer = document.createElement('div');
-            const image = document.createElement('img');
-            const deleteButton = document.createElement('button');
-
-            // Set image source and class
-            image.src = URL.createObjectURL(file);
-            image.className = 'img-thumbnail';
-
-            // Set delete button properties
-            deleteButton.textContent = 'Delete';
-            deleteButton.className = 'btn btn-danger btn-sm ml-2';
-            
-            // Add an event listener to the delete button for the 'click' event
-            deleteButton.addEventListener('click', function() {
-                // Remove the image container when the delete button is clicked
-                imageContainer.remove();
+</script>
+<script>
+    // Function to handle file input change
+    $('#images').change(function () {
+        $('#imagePreview').empty(); // Clear previous previews
+        if (this.files && this.files.length) {
+            Array.from(this.files).forEach(function (file) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    // Create image preview
+                    $('#imagePreview').append(
+                        '<div style="margin-right: 10px;">' +
+                        '<img src="' + e.target.result + '" style="width: 100px; height: 100px; object-fit: cover;">' +
+                        '</div>'
+                    );
+                };
+                reader.readAsDataURL(file);
             });
-
-            // Append image and delete button to the container
-            imageContainer.appendChild(image);
-            imageContainer.appendChild(deleteButton);
-
-            // Append the container to the imagePreview div
-            imagePreview.appendChild(imageContainer);
         }
     });
-});
-    
-
-
-    </script>
+</script>
 
     
 </html>

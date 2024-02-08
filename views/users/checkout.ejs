@@ -197,8 +197,8 @@
                                 </table>
                                 <div class="form-group">
                                     <div id="place-order-address-button">
-                                        <button class="btn-black btn">
-                                            Use the selected address and payment
+                                        <button class="btn-success btn">
+                                            Confirm Order
                                         </button>
                                     </div>
                                     <br>
@@ -252,19 +252,26 @@
     <script> 
         $(document).ready(function () {
             $('#place-order-address-button').on('click', function (e) {
+
                 e.preventDefault();
                 var selectIndex = $('input[type=radio][name="selectedAddress"]:checked').val();
                 console.log(selectIndex);
                 const paymentMethod = $('input[type=radio][name="payment-method"]:checked').val();
                 console.log(paymentMethod);
+                var code = document.getElementById('coupon-code');
+                var ccode = code.value
+                console.log(ccode);
                 var orderTot = document.getElementById('orderTotal');
                 var orderTotal = orderTot.textContent;
                 if (selectIndex !== undefined && paymentMethod !== undefined) {
+                    $('#coupon-code').prop('disabled', true);
+
                     const selectedAddress = selectIndex;
                     $.ajax({
                         type: 'POST',
                         url: '/checkout-address',
                         data: {
+                            couponCode:ccode,
                             selectedAddress: selectedAddress,
                             orderTotal: orderTotal,
                             payment: paymentMethod
@@ -277,7 +284,7 @@
     if (response.codSuccess) {
         // Success for Cash on Delivery (COD)
         console.log("COD Success");
-        document.getElementById('place-Checkout').innerHTML = '<a href="/place-order/' + response.id + '"><button class="btn btn-black btn-lg py-3 btn-block" type="submit">Place Order</button></a>';
+        document.getElementById('place-Checkout').innerHTML = '<a href="/place-order/' + response.id + '"><button class="btn btn-success btn-lg py-3 btn-block" type="submit">Place Order</button></a>';
     } else if (response.razorpaySuccess) {
         // Success for Razorpay
         console.log("respnose.newOrderId:" + response.id);
@@ -290,7 +297,7 @@
 
     } else if (response.walletSuccess) {  
         console.log("Wallet Success");
-        document.getElementById('place-Checkout').innerHTML = '<a href="/place-order/' + response.id + '"><button class="btn btn-black btn-lg py-3 btn-block" type="submit">Place Order</button></a>';
+        document.getElementById('place-Checkout').innerHTML = '<a href="/place-order/' + response.id + '"><button class="btn btn-success btn-lg py-3 btn-block" type="submit">Place Order</button></a>';
 
     } else {
         console.log("Unknown payment method or error in response");
@@ -321,6 +328,7 @@
  
 
             $('#pay-order').on('click', ()=>{
+
       console.log("payment clicked")
       const orderId = document.getElementById('order-id').innerHTML;
       const amount = document.getElementById('orderTotal').innerHTML;

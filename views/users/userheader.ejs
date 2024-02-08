@@ -66,33 +66,34 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item active">
-                            <a class="nav-link2" href="/home"><i class="fa-solid fa-house">Home</i></a>
+                            <a class="nav-link2" href="/home" onclick="closeNavbar()"><i class="fa-solid fa-house">Home</i></a>
                         </li>
                         <li class="nav-item active">
-                            <a class="nav-link2" href="/allproducts">&nbsp;<i class="fa-solid fa-cart-shopping">&nbsp;products </i></a>
+                            <a class="nav-link2" href="/allproducts" onclick="closeNavbar()">&nbsp;<i class="fa-solid fa-cart-shopping">&nbsp;products </i></a>
+                        </li>
+                        <!-- Add onclick="closeNavbar()" to each link -->
+                        <li class="nav-item active">
+                            <a class="nav-link2" href="/userprofile" onclick="closeNavbar()"><i class="fa-solid fa-user">my-profile</i></a>
                         </li>
                         <li class="nav-item active">
-                            <a class="nav-link2" href="/userprofile"><i class="fa-solid fa-user">my-profile</i></a>
+                            <a class="nav-link2" href="/showorders" onclick="closeNavbar()"><i class="fa-solid fa-sort">Show Orders</i></a>
                         </li>
                         <li class="nav-item active">
-                            <a class="nav-link2" href="/showorders"><i class="fa-solid fa-sort">Show Orders</i></a>
+                            <a class="nav-link2" href="/changepassword" onclick="closeNavbar()"><i class="fa-solid fa-shield-halved">Change Password</i></a>
                         </li>
                         <li class="nav-item active">
-                            <a class="nav-link2" href="/changepassword"><i class="fa-solid fa-shield-halved">Change Password</i></a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link2" href="/canceledorders"><i class="fa-solid fa-ban">Cancelled Orders</i></a>
+                            <a class="nav-link2" href="/canceledorders" onclick="closeNavbar()"><i class="fa-solid fa-ban">Cancelled Orders</i></a>
                         </li>
                         
                         <li class="nav-item active">
-                            <a class="nav-link2" href="/wallethistory"><i class="fa-solid fa-wallet">Wallet History</i></a>
+                            <a class="nav-link2" href="/wallethistory" onclick="closeNavbar()"><i class="fa-solid fa-wallet">Wallet History</i></a>
                         </li>
                         <li class="nav-item active">
-                            <a class="nav-link2" href="/editprofile"><i class="fa-solid fa-pen-to-square">Edit Profile</i></a>
+                            <a class="nav-link2" href="/editprofile" onclick="closeNavbar()"><i class="fa-solid fa-pen-to-square">Edit Profile</i></a>
                         </li>
                         
                         <!-- <li class="nav-item active">
-                            <a class="nav-link2" href="/logout"><i class="fa-solid fa-arrow-right-from-bracket">Logout</i></a>
+                            <a class="nav-link2" href="/logout" onclick="closeNavbar()"><i class="fa-solid fa-arrow-right-from-bracket">Logout</i></a>
                         </li> -->
                     </ul>
     
@@ -107,7 +108,13 @@
     </header>
   <script src="https://kit.fontawesome.com/9310a1ffd7.js" crossorigin="anonymous"></script>
 
+  <script>
+    function closeNavbar() {
+        // Get the navbar collapse element
+        const navbarCollapse = document.getElementById('navbarNav');
+        // Remove the 'show' class to close the navbar
+        navbarCollapse.classList.remove('show');
+    }
+  </script>
 </body>
 </html>
-
-

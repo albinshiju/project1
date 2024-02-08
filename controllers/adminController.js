@@ -478,7 +478,7 @@ const postsalesreport = async (req, res) => {
             order.items.forEach((item) => {
                 alldata.push({
                     productName: item.name,
-                    productPrice: item.price * item.quantity,
+                    productPrice: item.offerprice * item.quantity,
                     totalprice: order.totalprice,
                     orderid: order._id,
                     quantity: item.quantity,

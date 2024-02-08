@@ -6,7 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Banner Upload Page</title>
-    
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
@@ -191,5 +192,21 @@
             });
             
     </script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.9.0/dist/sweetalert2.all.min.js"></script>
+
+    <script>
+        document.querySelector('form').addEventListener('submit', function(event) {
+            const fileInput = document.getElementById('bannerUpload');
+            if (!fileInput.files || fileInput.files.length === 0) {
+                event.preventDefault(); // Prevent form submission
+                Swal.fire({
+  icon: 'error',
+  title: 'Please select a file to upload',
+});
+ 
+                      }
+        });
+    </script>
+    
 </body>
 </html>

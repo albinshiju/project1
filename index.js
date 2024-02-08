@@ -8,6 +8,7 @@ mongoose.connect(MONGO_URL).then(
 ).catch(error=>{
     console.log("database error",error);
 })
+// hello
 // mongoose.connect("mongodb://127.0.0.1:27017/user_management_system")
 const express =  require('express')
 const app = express()

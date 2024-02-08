@@ -76,6 +76,21 @@ const addBanner = async (req, res) => {
   }
 };
 
+// const addBanner = async (req, res) => {
+//   try {
+//     const uploadedBanner = req.file.path;
+//     console.log(req.file.filename);
+
+//     await new Banners({
+//       image: path.basename(uploadedBanner), 
+//     }).save();
+
+//     res.redirect('/admin/banners')
+
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
 
 
 

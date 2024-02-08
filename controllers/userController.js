@@ -42,17 +42,14 @@ const securePassword = async (password) => {
 
 const insertUser = async (req, res) => {
   try {
-    const id = req.session.user_id
+    const id = req.session.user_id;
     const name = req.body.name;
     const username = req.body.usernamecode;
-    const referalcode = req.body.referalcode
+    const referalcode = req.body.referalcode;
     const email = req.body.email;
     const mobile = req.body.mno;
     const image = req.file.filename;
     const password = req.body.password;
-    console.log(req.body);
-    console.log(username);
-    console.log(referalcode);
 
     const minLength = 8; // Minimum length
     const hasUppercase = /[A-Z]/.test(password); // At least one uppercase letter
@@ -61,56 +58,55 @@ const insertUser = async (req, res) => {
     const hasSpecialChar = /[!@#$%^&*]/.test(password); // At least one special character
 
     if (password.length < minLength) {
-      req.session.message = 'Password must be at least 8 characters long';
-      res.render('registration');
+      return res.status(400).send('Password must be at least 8 characters long');
     } else if (!hasUppercase) {
-      req.session.message = 'Password must contain at least one uppercase letter';
-      res.render('registration');
+      return res.status(400).send('Password must contain at least one uppercase letter');
     } else if (!hasLowercase) {
-      req.session.message = 'Password must contain at least one lowercase letter';
-      res.render('registration');
+      return res.status(400).send('Password must contain at least one lowercase letter');
     } else if (!hasDigit) {
-      req.session.message = 'Password must contain at least one digit';
-      res.render('registration');
+      return res.status(400).send('Password must contain at least one digit');
     } else if (!hasSpecialChar) {
-      req.session.message = 'Password must contain at least one special character';
-      res.render('registration');
-    } else {
-      const spassword = await securePassword(req.body.password);
-      const user = new User({
-        name,
-        username,
-        email,
-        mobile,
-        image,
-        referalcode,
-        password: spassword,
-      });
+      return res.status(400).send('Password must contain at least one special character');
+    }
+    
+    const alreadyexistingemail = await User.findOne({email:req.body.email})
+    if(alreadyexistingemail){
+      return res.send(data = 1);
+      
+    }
+    const spassword = await securePassword(req.body.password);
+    const user = new User({
+      name,
+      username,
+      email,
+      mobile,
+      image,
+      referalcode,
+      password: spassword,
+    });
 
-      const userData = await user.save();
+    const userData = await user.save();
 
-      if (userData) {
-        const otp = generateOTP();
+    if (userData) {
+      const otp = generateOTP();
+      otpStorage[email] = otp;
+      await sendVerifyMail(email, otp);
 
-        otpStorage[email] = otp;
-
-        await sendVerifyMail(email, otp);
-        const refereduser = await User.findOne({ username: referalcode })
-        console.log("referalcode" + refereduser);
-        if (refereduser) {
-          console.log(refereduser.username, "❤️❤️");
-          await creditmoneyonreferal(refereduser.username, refereduser._id)
-        }
-        res.redirect('/verification');
-      } else {
-        req.session.message = 'Your registration has been failed';
-        res.redirect('/registration');
+      const refereduser = await User.findOne({ username: referalcode });
+      if (refereduser) {
+        await creditmoneyonreferal(refereduser.username, refereduser._id);
       }
+
+      res.status(200).send('Registration successful');
+    } else {
+      res.status(500).send('Your registration has been failed');
     }
   } catch (error) {
     console.log(error.message);
+    res.status(500).send('Internal server error');
   }
 };
+
 const loginLoad = async (req, res) => {
   try {
 
@@ -678,6 +674,8 @@ const checkrazorpay = async (req, res) => {
 // };
 const checkaddress = async (req, res) => {
   try {
+    const couponCode = req.body.couponCode
+    console.log("❤️🥳0",req.body.couponCode);
     const addressIndex = req.body.selectedAddress;
     const orderTotal = req.body.orderTotal;
     const payment = req.body.payment;
@@ -720,7 +718,7 @@ const checkaddress = async (req, res) => {
       }
       return item; // No offer for this category, keep the original price
     });
-
+    console.log(couponCode,"👌👍");
     const orderSave = new Orders({
       userId: userId,
       items: itemsWithOffer, // Use the updated items array with offer prices
@@ -730,6 +728,7 @@ const checkaddress = async (req, res) => {
       paymentStatus: 'pending', // Adjust as needed
       deliveryStatus: 'pending', // Adjust as needed
       orderStatus: 'pending',
+      couponCode:couponCode
     });
 
     await orderSave.save();
@@ -775,6 +774,23 @@ const placeorder = async (req, res) => {
       { new: true }
     );
     data.save();
+    const order = await Orders.findById(id);
+
+    if (order) {
+      // If the order is found, now find the corresponding coupon
+      const coupon = await Coupon.findOne({ couponCode: order.couponCode });
+
+      if (coupon) {
+        coupon.active = false
+        await coupon.save()
+          // Coupon found, you can use it here
+          console.log('Coupon found:', coupon);
+      } else {
+          console.log('Coupon not found for the provided order.');
+      }
+    } else {
+        console.log('Order not found.');
+    }
 
     // Delete items from the user's cart
     await Cart.findOneAndDelete({ user: userId });
@@ -1109,7 +1125,7 @@ const checkcoupon = async (req, res) => {
     if (coupon && coupon.active) {
       console.log("yes, it's there and active");
       // Assuming you want to set active to false when the coupon is applied
-      await Coupon.findByIdAndUpdate(coupon._id, { $set: { active: false } });
+      // await Coupon.findByIdAndUpdate(coupon._id, { $set: { active: false } });
 
       res.json({ valid: true, discountPercentage: coupon.discountPercentage, message: 'Coupon applied successfully', messageColor: 'green' });
       console.log(coupon.discountPercentage);
@@ -1144,7 +1160,7 @@ async function creditmoneyonreferal(data, id) {
         user_id: useri._id,
         Balance: creditto.walletBalance,
         amount: "50",
-        status: "Credit",
+        status: "Refferal Credit",
       });
       await walletHistoryDebit.save();
       console.log("wallet😍😍😍", creditto.walletBalance);

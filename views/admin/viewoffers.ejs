@@ -80,7 +80,7 @@ td a:hover {
             </thead>
             <tbody>
                 <% offers.forEach(each_offer =>{%>
-              <tr>
+              <tr data-id="<%= each_offer.category._id %>">
                 
                 <td data-label="Category Name"><%= each_offer.category.categoryName %></td>
                 <td data-label="Percentage"><%= each_offer.percentage %>%</td>
@@ -116,6 +116,8 @@ td a:hover {
             })
             .then(Response => Response.json())
             .then(data=>{
+              const trToRemove = document.querySelector(`[data-id="${id}"]`)
+                trToRemove.remove();
                 Swal.fire('Removed!', `The category  has been removed.`, 'success');
             })
             .catch(error => {

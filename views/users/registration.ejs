@@ -159,8 +159,54 @@
 
         <a class="mt-3" href="/login">Go back</a>
     </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.9.0/dist/sweetalert2.all.min.js"></script>
 
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+        // Add an event listener to the form submit event
+        document.querySelector("form").addEventListener("submit", function (event) {
+            // Prevent the default form submission behavior
+            event.preventDefault();
+
+            // Call the FormValidation function to ensure all fields are valid
+            if (FormValidation()) {
+                // If the form is valid, construct the form data
+                const formData = new FormData(this);
+
+                // Send a POST request to the /register endpoint
+                fetch("/register", {
+                    method: "POST",
+                    body: formData
+                })
+                    .then(response => {
+                        // Handle the response based on status code
+                        if (response.ok) {
+                            // If the response is successful, redirect the user or display a success message
+                            console.log("Registration successful!");
+                            // Redirect the user or display a success message
+                            window.location.href = "/verification"; // Redirect to /verification
+
+                        } else if(data=1) {
+                            Swal.fire({
+  icon: "error",
+  title: "Oops...",
+  text: "Email Already Exist!",
+//   footer: '<a href="#">Why do I have this issue?</a>'
+});                            // If the response is not successful, handle errors accordingly
+                            // console.error("Reagistration failed:", response.statusText);
+                            // Display an error message to the user
+                        }
+                    })
+                    .catch(error => {
+                        // Handle any network errors or exceptions
+                        console.error("Error:", error);
+                        // Display an error message to the user
+                    });
+            }
+        });
+    });
         function FormValidation() {
             console.log("form validation");
     
@@ -177,10 +223,14 @@
             }
     
             var emailInput = document.querySelector('input[name="email"]');
-            if (emailInput.value === "") {
-                displayError(emailInput);
-                return false;
-            }
+if (emailInput.value === "") {
+    displayError(emailInput);
+    return false;
+} else if (!emailInput.value.endsWith('.com')) {
+    displayError(emailInput, 'Please enter a valid email ending with ".com"');
+    return false;
+}
+
     
             var mobileInput = document.querySelector('input[name="mno"]');
             var mobileErrorSpan = mobileInput.nextElementSibling;

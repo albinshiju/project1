@@ -54,7 +54,26 @@
 
     <span class="error">Offer Already Exist!</span>
 
-    <%- include('viewoffers') %>
+    <table>
+      <thead>
+        <tr>
+          <th>Category Name</th>
+          <th>Percentage</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+          <% offers.forEach(each_offer =>{%>
+        <tr data-id="<%= each_offer.category._id %>">
+          
+          <td data-label="Category Name"><%= each_offer.category.categoryName %></td>
+          <td data-label="Percentage"><%= each_offer.percentage %>%</td>
+          <td data-label="Action" ><a href="" onclick="confirmRemove1(`<%= each_offer.category._id %>`)">Remove</a></td>
+        </tr>
+        <%}) %>
+
+      </tbody>
+    </table>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
@@ -109,7 +128,9 @@ if (percentageValue > 80) {
         .then((data) => {
           if (data.exist === 0) {
             console.log("false");
-            Swal.fire('Added!', `The offer has been added.`, 'success');
+            // Swal.fire('Added!', `The offer has been added.`, 'success');
+            location.reload()
+            
           } else if (data.exist === 1) {
             console.log("true");
             Swal.fire('Cancelled!', `The offer already exists.`, 'error');
@@ -123,6 +144,39 @@ if (percentageValue > 80) {
     }
   });
 }
+function confirmRemove1(id) {
+        event.preventDefault();
+
+        Swal.fire({
+          title: 'Confirmation',
+          text: `Do you want to remove the category ?`,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, remove it!',
+          cancelButtonText: 'No, cancel!',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            fetch('/admin/removeoffer',{
+                method:'DELETE',
+                headers:{
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id:id}),
+            })
+            .then(Response => Response.json())
+            .then(data=>{
+              const trToRemove = document.querySelector(`[data-id="${id}"]`)
+                trToRemove.remove();
+                Swal.fire('Removed!', `The category  has been removed.`, 'success');
+            })
+            .catch(error => {
+              Swal.fire('Error', 'An error occurred while trying to remove the category.', 'error');
+            });
+          } else {
+            Swal.fire('Cancelled', 'The removal process was cancelled.', 'info');
+          }
+        });
+      }
     </script>
     
     

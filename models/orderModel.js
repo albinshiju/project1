@@ -80,6 +80,7 @@ const orderSchema = new Schema({
             default: null
 
         },
+        
     }
     ],
     address:  {
@@ -131,6 +132,10 @@ const orderSchema = new Schema({
         type: Boolean,
         default: false
     },
+    couponCode:{
+        type:String,
+        // default:"null"
+    }
 });
 
 const Orders = mongoose.model('Orders', orderSchema);
